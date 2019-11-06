@@ -10,6 +10,44 @@ var docClient = new aws.DynamoDB.DocumentClient();
 var gymRequestor = "Ramya";
 var gymOwner = "Sample Owner";
 
+//create new Owner & his own S3 bucket
+app.post(
+  "/createnewOwner/:firstName/:lastName/:emailAddress/:phoneNumber",
+  (req, res) => {
+    var paramsaddOwner = {
+      TableName: "ownerDatabase",
+      Item: {
+        Name: req.params.firstName + " " + req.params.lastName,
+        emailAddress: req.params.emailAddress,
+        phoneNumber: req.params.phoneNumber
+      }
+    };
+    docClient.put(paramsaddOwner, function(err, data) {
+      if (err) {
+        console.log("Unable to add item" + JSON.stringify(err));
+      } else {
+        console.log("Added item", JSON.stringify(data, null, 2));
+        aws.config.update({
+          region: "us-east",
+          endpoint: "https://s3.amazonaws.com"
+        });
+        s3 = new aws.S3({ apiVersion: "2006-03-1" });
+        var bucketParams = {
+          Bucket: (req.params.firstName + req.params.lastName).toLowerCase(),
+          ACL: "public-read"
+        };
+        s3.createBucket(bucketParams, function(err, data) {
+          if (err) {
+            console.log("Error", err);
+          } else {
+            console.log("Success", data.Location);
+          }
+        });
+      }
+    });
+  }
+);
+
 //create Gym
 app.post(
   "/creategym/:gymOwner/:location/:cost/:cardioequipment/:dumbbell/:barbell",
