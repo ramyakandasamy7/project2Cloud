@@ -1,0 +1,47 @@
+html, body {
+	padding: 0;
+	margin: 0;
+}
+body {
+	background-image: url('../imgs/loginbg.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-color: #333333;
+	height: 100%;
+}
+#root {
+	height: 100vh;
+}
+
+.container-fluid {
+	width: 100vw;
+	padding: 0 !important;
+}
+
+.login-button {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+}
+
+.vertical-center {
+	min-height: 100%;
+	min-height: 100vh;
+
+	display: flex;
+	align-items: center;
+}
+
+.jumbotron {
+	background-color: rgba(255,255,255,.15);
+	backdrop-filter: blur(5px);
+	margin-bottom: 0 !important;
+}
+
+input {
+	height: 70px !important;
+	font-size: 28px !important;
+}
+#search_button {
+	width: 70px !important;
+}
