@@ -11,6 +11,7 @@
   "dependencies": {
     "aws-sdk": "^2.563.0",
     "express": "^4.17.1",
-    "googlemaps": "^1.12.0"
+    "googlemaps": "^1.12.0",
+    "node-mailer": "^0.1.1"
   }
 }
