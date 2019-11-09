@@ -13,8 +13,8 @@ var owners = new Array();
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "ramyakandasamy7@gmail.com",
-    pass: "Bluem85!"
+    user: "INSERT",
+    pass: "INERST!"
   }
 });
 //create an Owner
