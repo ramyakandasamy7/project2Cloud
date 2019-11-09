@@ -6,6 +6,8 @@ aws.config.update({
   endpoint: "http://dynamodb.us-east-1.amazonaws.com"
 });
 var docClient = new aws.DynamoDB.DocumentClient();
+
+//create new user
 userRouter.post(
   "/createnewUser/:firstName/:lastName/:emailAddress/:paymentInformation/:location/:password",
   (req, res) => {
@@ -31,3 +33,19 @@ userRouter.post(
     });
   }
 );
+
+//modify user
+//delete user
+//get user
+userRouter.get("/users", (req, res) => {
+  var params = {
+    TableName: "userDatabase"
+  };
+  docClient.scan(params, (err, data) => {
+    data.Items.forEach(function(item) {
+      console.log(item);
+      owners.push(item);
+    });
+    res.send(owners);
+  });
+});

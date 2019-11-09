@@ -8,6 +8,7 @@ aws.config.update({
 var docClient = new aws.DynamoDB.DocumentClient();
 
 //create a gym
+//need to be able to add pictures of a gym (should that be in owners or in gyms?)
 gymRouter.post(
   "/creategym/:gymOwner/:location/:cost/:cardioequipment/:dumbbell/:barbell/:urltoPictures",
   (req, res) => {

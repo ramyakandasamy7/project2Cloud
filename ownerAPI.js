@@ -8,7 +8,9 @@ aws.config.update({
 });
 var docClient = new aws.DynamoDB.DocumentClient();
 //ownerAPI
+var owners = new Array();
 
+//create an Owner
 ownerRouter.post(
   "/createnewOwner/:firstName/:lastName/:emailAddress/:phoneNumber/:physicalAddress",
   (req, res) => {
@@ -55,5 +57,22 @@ ownerRouter.post(
     });
   }
 );
+
+//modify an Owner
+//delete an Owner
+
+//get all Owners
+ownerRouter.get("/owners", (req, res) => {
+  var params = {
+    TableName: "ownerDatabase"
+  };
+  docClient.scan(params, (err, data) => {
+    data.Items.forEach(function(item) {
+      console.log(item);
+      owners.push(item);
+    });
+    res.send(owners);
+  });
+});
 
 module.exports = ownerRouter;
