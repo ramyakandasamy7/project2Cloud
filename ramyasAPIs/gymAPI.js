@@ -90,13 +90,12 @@ gymRouter.post(
         gymID: req.params.gymID
       },
       UpdateExpression:
-        " set cost =:x, locationofGym=:y, attributes.cardioequipment =:z, attributes.dumbbell =:a, attributes.barbell =:b",
+        " set cost =:x, location=:y, attributes=:z,gymrating=:a",
       ExpressionAttributeValues: {
         ":x": req.params.cost,
         ":y": req.params.location,
-        ":z": req.params.cardioequipment,
-        ":a": req.params.dumbbell,
-        ":b": req.params.barbell
+        ":z": req.params.attributes,
+        ":a": req.params.gymrating
       },
       ReturnValues: "UPDATED_NEW"
     };
