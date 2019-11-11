@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+      #myMap {
+        width: 700px;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <span>Gyms In <p id="location"><%= location %></p></span>
+    <ul id="gym_info" style="display:none;float:right;">
+        <li>Gym Name</li>
+        <li>Gym Address</li>
+        <li>Gym Information</li>
+    </ul> 
+    <div id="myMap"></div>
+    <script>
+    var map;
+    var gymmarker = [];
+    var geocoder;
+    var address = document.getElementById("location").innerText;
+    var center;
+    var test_markers = [{lat:37.4, lng:-122}, {lat: 37.5, lng:-121.8}] 
+    function myMap() {
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({address: address,}, function(results, status) {
+            center = results[0].geometry.location;
+            map = new google.maps.Map(document.getElementById('myMap'), {
+              center: center, zoom: 10
+            })
+            for(var i = 0; i < test_markers.length; i++) {
+              gymmarker[i] = new google.maps.Marker({
+              position: test_markers[i], map: map, title: 'Gym#' + i, animation: google.maps.Animation.DROP
+              });
+              gymmarker[i].addListener('click', function() {
+                if(this.getAnimation() !== null) {
+                  this.setAnimation(null);
+                }else {
+                  this.setAnimation(google.maps.Animation.BOUNCE);
+                }
+              });
+            }
+        })
+    }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRGy0nZ_d3ye2cszR56Y-0FcTIGR4ffjk&callback=myMap" async defer></script>
+  </body>
+</html>
