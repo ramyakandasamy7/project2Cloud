@@ -1,16 +1,14 @@
 const gym = require("express");
 const gymRouter = gym.Router();
 const aws = require("aws-sdk");
+
 aws.config.update({
   region: "us-east-1",
   endpoint: "http://dynamodb.us-east-1.amazonaws.com"
 });
 var docClient = new aws.DynamoDB.DocumentClient();
-
-//create a gym
-//need to be able to add pictures of a gym (should that be in owners or in gyms?)
 gymRouter.post(
-  "/creategym/:gymOwner/:location/:cost/:cardioequipment/:dumbbell/:barbell/:urltoPictures",
+  "/creategym/:ownerID/:location/:cost/:attributes/:gymrating",
   (req, res) => {
     var ID = Math.random()
       .toString(36)
@@ -19,14 +17,11 @@ gymRouter.post(
       TableName: "gymDatabase",
       Item: {
         gymID: ID,
-        gymOwner: req.params.gymOwner,
+        gymOwner: req.params.ownerID,
         cost: req.params.cost,
         locationofGym: req.params.location,
-        attributes: {
-          cardioequipment: req.params.cardioequipment,
-          dumbbell: req.params.dumbbell,
-          barbell: req.params.barbell
-        }
+        attributes: req.params.attributes,
+        rating: req.params.gymrating
       }
     };
     docClient.put(paramsaddGym, function(err, data) {
@@ -34,13 +29,41 @@ gymRouter.post(
         console.log("Unable to add item" + JSON.stringify(err));
       } else {
         console.log("Added item", JSON.stringify(data, null, 2));
+        createFolder(ID);
+        //name folder the id of the owner and pictures should be easier to parse
       }
     });
   }
 );
 
+function createFolder(ID) {
+  aws.config.update({
+    region: "us-west",
+    endpoint: "https://s3.amazonaws.com"
+  });
+  var bucketParams = {
+    Bucket: "ramyakandasamy",
+    Key: ID + "/",
+    ACL: "public-read"
+  };
+  console.log(aws.config.region + aws.config.endpoint);
+  const s3 = new aws.S3({ apiVersion: "2006-03-1" });
+  s3.putObject(bucketParams, function(err, data) {
+    console.log(s3);
+    if (err) {
+      console.log("Error creating the folder", err);
+    } else {
+      console.log("Successfully created a folder");
+    }
+  });
+}
+
 //delete gym
 gymRouter.post("/deleterequest/:gymID", (req, res) => {
+  aws.config.update({
+    region: "us-east-1",
+    endpoint: "http://dynamodb.us-east-1.amazonaws.com"
+  });
   var params = {
     TableName: "gymDatabase",
     Key: {
@@ -57,8 +80,9 @@ gymRouter.post("/deleterequest/:gymID", (req, res) => {
 });
 
 //modify gym attributes
+//cost, type of equipment[], owner_id, description, days available
 gymRouter.post(
-  "/modifygym/:gymID/:location/:cost/:cardioequipment/:dumbbell/:barbell",
+  "/modifygym/:gymID/:location/:cost/:attributes/:gymrating",
   (req, res) => {
     var paramsaddGym = {
       TableName: "gymDatabase",
