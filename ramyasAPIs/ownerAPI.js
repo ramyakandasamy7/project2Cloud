@@ -13,13 +13,17 @@ var owners = new Array();
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "INSERT",
-    pass: "INERST!"
+    user: "ramyakandasamy7@gmail.com",
+    pass: "Bluem85!"
   }
 });
+var mailOptions;
 //create an Owner
+//first name, last name, phone number
+//email address
+//password
 ownerRouter.post(
-  "/createnewOwner/:firstName/:lastName/:emailAddress/:phoneNumber/:physicalAddress",
+  "/createnewOwner/:firstName/:lastName/:emailAddress/:phoneNumber/:password",
   (req, res) => {
     aws.config.update({
       region: "us-east-1",
@@ -35,7 +39,7 @@ ownerRouter.post(
         isVerified: false,
         emailAddress: req.params.emailAddress,
         phoneNumber: req.params.phoneNumber,
-        physicalAddress: req.params.physicalAddress
+        password: password
       }
     };
     var link = "http://localhost:3000" + "/verify?id=" + ID;
@@ -43,7 +47,7 @@ ownerRouter.post(
       to: req.params.emailAddress,
       subject: "Please confirm your email address",
       html:
-        "Hello,<br> Please Click on the link to verify your email.<br><a href=" +
+        "Hello,<br> Thank you for deciding to be an owner on our service. Please Click on the link to verify your email.<br><a href=" +
         link +
         ">Click here to verify</a>"
     };
@@ -60,7 +64,7 @@ ownerRouter.post(
           }
         });
         aws.config.update({
-          region: "us-east",
+          region: "us-west",
           endpoint: "https://s3.amazonaws.com"
         });
         //name folder the id of the owner and pictures should be easier to parse
@@ -80,7 +84,7 @@ ownerRouter.post(
     });
   }
 );
-
+//verify email address
 ownerRouter.get("/verify", function(req, res) {
   console.log(req.protocol + ":/" + req.get("host"));
   if (req.protocol + "://" + req.get("host") == "http://" + "localhost:3000") {
@@ -103,7 +107,7 @@ ownerRouter.get("/verify", function(req, res) {
         console.log(err);
       } else {
         data.Items.forEach(function(item) {
-          if (item.userID == req.query.id) {
+          if (item.ownerID == req.query.id) {
             console.log("user exists");
             console.log("email is verified");
             var params = {
@@ -127,6 +131,10 @@ ownerRouter.get("/verify", function(req, res) {
 
             res.end(
               "<h1>Email " + mailOptions.to + " is been Successfully verified"
+            );
+          } else {
+            console.log(
+              "item.userID is" + item.ownerID + "req.userID is" + req.userID
             );
           }
         });
