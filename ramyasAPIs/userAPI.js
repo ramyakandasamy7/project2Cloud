@@ -1,6 +1,8 @@
 const user = require("express");
 const userRouter = user.Router();
 const aws = require("aws-sdk");
+const bodyParser = require("body-Parser");
+
 const nodemailer = require("nodemailer");
 aws.config.update({
   region: "us-east-1",
@@ -10,36 +12,36 @@ var docClient = new aws.DynamoDB.DocumentClient();
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "INSERT",
-    pass: "INSERT"
+    user: "ramyakandasamy7@gmail.com",
+    pass: "Bluem85!"
   }
 });
 //create new user
-
+userRouter.use(bodyParser.json());
+userRouter.use(bodyParser.urlencoded({ extended: false }));
 userRouter.post(
-  "/createnewUser/:firstName/:lastName/:emailAddress/:paymentInformation/:location/:password",
+  "/createnewUser", ///:firstName/:lastName/:emailAddress/:paymentInformation/:location/:password",
   (req, res) => {
-    console.log("Here");
     var ID = Math.random()
       .toString(36)
       .substr(2, 9);
     console.log(ID);
+    console.log(JSON.stringify(req.body));
     var paramsaddUser = {
       TableName: "userDatabase",
       Item: {
         userID: ID,
         isVerified: false,
-        Name: req.params.firstName + " " + req.params.lastName,
-        username: req.params.emailAddress,
-        paymentInformation: req.params.paymentInformation,
-        password: req.params.password,
-        location: req.params.location,
-        requests: {}
+        //Name: req.params.firstName + " " + req.params.lastName,
+        username: req.body.register_email,
+        //paymentInformation: req.params.paymentInformation,
+        password: req.body.register_password,
+        location: req.body.register_location
       }
     };
-    var link = "http://localhost:3000" + "/verify?id=" + ID;
+    var link = "http://localhost:3000" + "/verifyUser?id=" + ID;
     mailOptions = {
-      to: req.params.emailAddress,
+      to: req.body.register_email,
       subject: "Please confirm your email address",
       html:
         "Hello,<br> Please Click on the link to verify your email.<br><a href=" +
@@ -65,7 +67,7 @@ userRouter.post(
 );
 
 //requires verification of new User
-userRouter.get("/verify", function(req, res) {
+userRouter.get("/verifyUser", function(req, res) {
   console.log(req.protocol + ":/" + req.get("host"));
   if (req.protocol + "://" + req.get("host") == "http://" + "localhost:3000") {
     console.log(
@@ -122,7 +124,7 @@ userRouter.get("/verify", function(req, res) {
 });
 
 //login if valid
-userRouter.post("/login/:emailaddress/:password", function(req, res) {
+userRouter.post("/loginUser", function(req, res) {
   var idParams = {
     TableName: "userDatabase"
   };
@@ -132,8 +134,8 @@ userRouter.post("/login/:emailaddress/:password", function(req, res) {
     } else {
       data.Items.forEach(function(item) {
         if (
-          item.username == req.params.emailaddress &&
-          item.password == req.params.password &&
+          item.username == req.body.username &&
+          item.password == req.body.password &&
           item.isVerified == true
         ) {
           console.log("you have successfully logged in!");
@@ -156,12 +158,12 @@ userRouter.post(
       UpdateExpression:
         "set firstName =:x, lastName =:y, emailAddress=:z, paymentInformation=:a, location=:b, password=:c",
       ExpressionAttributeValues: {
-        ":x": req.params.firstName,
-        ":y": req.params.lastName,
-        ":z": req.params.emailAddress,
-        ":a": req.params.paymentInformation,
-        ":b": req.params.location,
-        ":c": req.params.password
+        ":x": req.body.firstName,
+        ":y": req.body.lastName,
+        ":z": req.body.emailAddress,
+        ":a": req.body.paymentInformation,
+        ":b": req.body.location,
+        ":c": req.bo.password
       },
       ReturnValues: "UPDATED_NEW"
     };
@@ -176,11 +178,11 @@ userRouter.post(
 );
 
 //delete user
-userRouter.post("/deleteUser/:userID", (req, res) => {
+userRouter.post("/deleteUser", (req, res) => {
   var params = {
     TableName: "userDatabase",
     Key: {
-      userID: req.params.userID
+      userID: req.body.userID
     }
   };
   docClient.delete(params, (err, data) => {
