@@ -13,7 +13,7 @@ var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
     user: "ramyakandasamy7@gmail.com",
-    pass: "Bluem85!"
+    pass: "AvaandMia2468!"
   }
 });
 //create new user
@@ -25,10 +25,9 @@ userRouter.post(
     var ID = Math.random()
       .toString(36)
       .substr(2, 9);
-    console.log(ID);
-    console.log(JSON.stringify(req.body));
     var paramsaddUser = {
       TableName: "userDatabase",
+
       Item: {
         userID: ID,
         isVerified: false,
@@ -51,14 +50,14 @@ userRouter.post(
 
     docClient.put(paramsaddUser, function(err, data) {
       if (err) {
-        console.log("Unable to add item" + err);
+        res.json(404 + "error");
       } else {
-        console.log("userCreated");
+        console.log(200 + " user created");
         smtpTransport.sendMail(mailOptions, (err, response) => {
           if (err) {
-            console.log(err);
+            res.json(400 + " error sending email");
           } else {
-            console.log("message sent" + response.message);
+            res.json(200 + " email sent");
           }
         });
       }
@@ -70,10 +69,7 @@ userRouter.post(
 userRouter.get("/verifyUser", function(req, res) {
   console.log(req.protocol + ":/" + req.get("host"));
   if (req.protocol + "://" + req.get("host") == "http://" + "localhost:3000") {
-    console.log(
-      "Domain is matched. Information is from Authentic email" +
-        JSON.stringify(req.query)
-    );
+    res.json(200 + " Information is from an authentic email");
     var idParams = {
       TableName: "userDatabase",
       KeyConditionExpression: "#userID =:userID",
@@ -86,12 +82,11 @@ userRouter.get("/verifyUser", function(req, res) {
     };
     docClient.query(idParams, function(err, data) {
       if (err) {
-        console.log(err);
+        res.json(400, "No user exists with that email address");
       } else {
         data.Items.forEach(function(item) {
           if (item.userID == req.query.id) {
-            console.log("user exists");
-            console.log("email is verified");
+            res.json(200 + " user exists in database");
             var params = {
               TableName: "userDatabase",
               Key: {
@@ -105,9 +100,9 @@ userRouter.get("/verifyUser", function(req, res) {
             };
             docClient.update(params, function(err, data) {
               if (err) {
-                console.log(err);
+                res.json(400 + "user is not verified");
               } else {
-                console.log("Successfully verified!");
+                res.json(200 + "user is successfully verified");
               }
             });
 
@@ -119,7 +114,7 @@ userRouter.get("/verifyUser", function(req, res) {
       }
     });
   } else {
-    console.log("bad request");
+    res.json(400 + "link is invalid");
   }
 });
 
@@ -130,7 +125,7 @@ userRouter.post("/loginUser", function(req, res) {
   };
   docClient.scan(idParams, function(err, data) {
     if (err) {
-      console.log(err);
+      res.json(404 + " there was an issue on our database ");
     } else {
       data.Items.forEach(function(item) {
         if (
@@ -138,44 +133,41 @@ userRouter.post("/loginUser", function(req, res) {
           item.password == req.body.password &&
           item.isVerified == true
         ) {
-          console.log("you have successfully logged in!");
+          res.json(200 + " user has successfully logged in");
         } else {
-          console.log("there is an error in your login screen");
+          res.json(400 + " invalid credentials");
         }
       });
     }
   });
 });
 //modify user
-userRouter.post(
-  "/modifyUser/:userID/:firstName/:lastName/:emailAddress/:paymentInformation/:location/:password",
-  (req, res) => {
-    var params = {
-      TableName: "userDatabase",
-      Key: {
-        userID: req.params.userID
-      },
-      UpdateExpression:
-        "set firstName =:x, lastName =:y, emailAddress=:z, paymentInformation=:a, location=:b, password=:c",
-      ExpressionAttributeValues: {
-        ":x": req.body.firstName,
-        ":y": req.body.lastName,
-        ":z": req.body.emailAddress,
-        ":a": req.body.paymentInformation,
-        ":b": req.body.location,
-        ":c": req.bo.password
-      },
-      ReturnValues: "UPDATED_NEW"
-    };
-    docClient.update(params, function(err, data) {
-      if (err) {
-        console.error("unable to update item", err);
-      } else {
-        console.log("success");
-      }
-    });
-  }
-);
+userRouter.post("/modifyUser/", (req, res) => {
+  var params = {
+    TableName: "userDatabase",
+    Key: {
+      userID: req.body.userID
+    },
+    UpdateExpression:
+      "set firstName =:x, lastName =:y, emailAddress=:z, paymentInformation=:a, location=:b, password=:c",
+    ExpressionAttributeValues: {
+      ":x": req.body.firstName,
+      ":y": req.body.lastName,
+      ":z": req.body.emailAddress,
+      ":a": req.body.paymentInformation,
+      ":b": req.body.location,
+      ":c": req.bo.password
+    },
+    ReturnValues: "UPDATED_NEW"
+  };
+  docClient.update(params, function(err, data) {
+    if (err) {
+      res.json(400 + " unable to update user");
+    } else {
+      res.json(200 + " user successfully modified");
+    }
+  });
+});
 
 //delete user
 userRouter.post("/deleteUser", (req, res) => {
@@ -187,9 +179,9 @@ userRouter.post("/deleteUser", (req, res) => {
   };
   docClient.delete(params, (err, data) => {
     if (err) {
-      console.log("unable to delete item");
+      res.json(400 + "user was not deleted");
     } else {
-      console.log("Delete Item succeeded");
+      res.json(200 + "user is successfully deleted");
     }
   });
 });
@@ -200,10 +192,9 @@ userRouter.get("/users", (req, res) => {
   };
   docClient.scan(params, (err, data) => {
     data.Items.forEach(function(item) {
-      console.log(item);
-      owners.push(item);
+      users.push(item);
     });
-    res.send(owners);
+    res.send(users);
   });
 });
 module.exports = userRouter;
