@@ -12,8 +12,8 @@ var docClient = new aws.DynamoDB.DocumentClient();
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "ramyakandasamy7@gmail.com",
-    pass: "AvaandMia2468!"
+    user: "INSERT",
+    pass: "INSERT"
   }
 });
 //create new user

@@ -16,8 +16,8 @@ ownerRouter.use(bodyParser.urlencoded({ extended: false }));
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "ramyakandasamy7@gmail.com",
-    pass: "Bluem85!"
+    user: "INSERT"
+    pass: "INSERT"
   }
 });
 var mailOptions;
