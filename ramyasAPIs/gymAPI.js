@@ -21,16 +21,14 @@ gymRouter.post("/creategym", (req, res) => {
       gymOwner: req.body.ownerID,
       cost: req.body.cost,
       locationofGym: req.body.location,
-      attributes: req.body.attributes,
-      rating: ""
+      attributes: req.body.attributes
     }
   };
   docClient.put(paramsaddGym, function(err, data) {
     if (err) {
-      console.log("Unable to add item" + JSON.stringify(err));
+      return res.status(400).json({ error: err });
     } else {
-      console.log("Added item", JSON.stringify(data, null, 2));
-      createFolder(ID);
+      return createFolder(ID);
       //name folder the id of the owner and pictures should be easier to parse
     }
   });
@@ -46,20 +44,18 @@ function createFolder(ID) {
     Key: ID + "/",
     ACL: "public-read"
   };
-  console.log(aws.config.region + aws.config.endpoint);
   const s3 = new aws.S3({ apiVersion: "2006-03-1" });
   s3.putObject(bucketParams, function(err, data) {
-    console.log(s3);
     if (err) {
-      console.log("Error creating the folder", err);
+      return res.status(400).json({ error: err });
     } else {
-      console.log("Successfully created a folder");
+      return res.status(200).json({ message: ID + "folder created" });
     }
   });
 }
 
 //delete gym
-gymRouter.post("/deleterequest/:gymID", (req, res) => {
+gymRouter.post("/delete", (req, res) => {
   aws.config.update({
     region: "us-east-1",
     endpoint: "http://dynamodb.us-east-1.amazonaws.com"
@@ -72,9 +68,11 @@ gymRouter.post("/deleterequest/:gymID", (req, res) => {
   };
   docClient.delete(params, (err, data) => {
     if (err) {
-      console.log("unable to delete item");
+      return res.status(400).json({
+        error: "unable to delete gym " + req.body.gymID + " error is:" + err
+      });
     } else {
-      console.log("Delete Item succeeded");
+      return res.status(200).json({ message: req.body.gymID + "gym deleted" });
     }
   });
 });
@@ -98,9 +96,13 @@ gymRouter.post("/modifygym", (req, res) => {
   };
   docClient.update(paramsaddGym, function(err, data) {
     if (err) {
-      console.log("Unable to modify item" + JSON.stringify(err));
+      return res.status(400).json({
+        message: "unable to modify gym " + req.body.gymID + " error is: " + err
+      });
     } else {
-      console.log("Added item", JSON.stringify(data, null, 2));
+      return res
+        .status(200)
+        .json({ message: req.body.gymID + "updated to" + data });
     }
   });
 });
