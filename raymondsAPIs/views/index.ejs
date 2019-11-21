@@ -7,9 +7,17 @@
     <title>Document</title>
   </head>
   <body>
-    <form method="post" action="/findgym">
-      <label>Enter Location:<input type="text" name="location"/></label>
-      <input type="submit" value="Find Gym">
-    </form>
+      <form method="post" action="/findgym">
+        <label>Enter Location:<input id="searchText" type="text" name="location"/></label>
+        <input type="submit" value="Find Gym">
+      </form>
+      <script>
+          function fillin() {
+              var autocomplete = null;
+              var input = document.getElementById('searchText');
+              autocomplete = new google.maps.places.Autocomplete(input);
+            }
+          </script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdd-O6jMPlIBrnBsv1n9WF_Y3l5zCYVGA&libraries=places&callback=fillin"></script>
   </body>
 </html>
