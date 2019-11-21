@@ -14,6 +14,7 @@ session_start();
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
 		<script src="https://kit.fontawesome.com/a215ff507f.js" crossorigin="anonymous"></script>
 		<script type='text/javascript' src='js/login.js?t=<?php echo time();?>'></script>
+		<script type='text/javascript' src='js/bootstrap-validate.js'></script>
 		<script type='text/javascript'>
 			$(document).ready(function() {
 				initUI();

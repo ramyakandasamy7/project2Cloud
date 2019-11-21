@@ -2,6 +2,7 @@ const owner = require("express");
 const ownerRouter = owner.Router();
 const aws = require("aws-sdk");
 const nodemailer = require("nodemailer");
+const bodyParser = require("body-Parser");
 const s3 = new aws.S3({ apiVersion: "2006-03-1" });
 aws.config.update({
   region: "us-east-1",
@@ -10,21 +11,28 @@ aws.config.update({
 var docClient = new aws.DynamoDB.DocumentClient();
 //ownerAPI
 var owners = new Array();
+ownerRouter.use(bodyParser.json());
+ownerRouter.use(bodyParser.urlencoded({ extended: false }));
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "INSERT",
-    pass: "INERST!"
+    user: "INSERT"
+    pass: "INSERT"
   }
 });
+var mailOptions;
 //create an Owner
+//first name, last name, phone number
+//email address
+//password
 ownerRouter.post(
-  "/createnewOwner/:firstName/:lastName/:emailAddress/:phoneNumber/:physicalAddress",
+  "/createnewOwner", //:firstName/:lastName/:emailAddress/:phoneNumber/:password",
   (req, res) => {
     aws.config.update({
       region: "us-east-1",
       endpoint: "http://dynamodb.us-east-1.amazonaws.com"
     });
+    console.log("create new owner" + JSON.stringify(req.body));
     var ID = Math.random()
       .toString(36)
       .substr(2, 9);
@@ -33,17 +41,22 @@ ownerRouter.post(
       Item: {
         ownerID: ID,
         isVerified: false,
-        emailAddress: req.params.emailAddress,
-        phoneNumber: req.params.phoneNumber,
-        physicalAddress: req.params.physicalAddress
+        //Name: req.params.firstName + " " + req.params.lastName,
+        username: req.body.register_email,
+        //paymentInformation: req.params.paymentInformation,
+        password: req.body.register_password,
+        location: req.body.register_location
+        //emailAddress: req.body.register_email
+        //phoneNumber: req.params.phoneNumber,
       }
     };
-    var link = "http://localhost:3000" + "/verify?id=" + ID;
+    var link = "http://localhost:3000" + "/verifyOwner?id=" + ID;
+    var email = req.body.register_email;
     mailOptions = {
-      to: req.params.emailAddress,
+      to: email,
       subject: "Please confirm your email address",
       html:
-        "Hello,<br> Please Click on the link to verify your email.<br><a href=" +
+        "Hello,<br> Thank you for deciding to be an owner on our service. Please Click on the link to verify your email.<br><a href=" +
         link +
         ">Click here to verify</a>"
     };
@@ -60,28 +73,16 @@ ownerRouter.post(
           }
         });
         aws.config.update({
-          region: "us-east",
+          region: "us-west",
           endpoint: "https://s3.amazonaws.com"
         });
         //name folder the id of the owner and pictures should be easier to parse
-        var bucketParams = {
-          Bucket: "ramyakandasamy",
-          Key: ID + "/",
-          ACL: "public-read"
-        };
-        s3.putObject(bucketParams, function(err, data) {
-          if (err) {
-            console.log("Error creating the folder", err);
-          } else {
-            console.log("Successfully created a folder");
-          }
-        });
       }
     });
   }
 );
-
-ownerRouter.get("/verify", function(req, res) {
+//verify email address
+ownerRouter.get("/verifyOwner", function(req, res) {
   console.log(req.protocol + ":/" + req.get("host"));
   if (req.protocol + "://" + req.get("host") == "http://" + "localhost:3000") {
     console.log(
@@ -103,7 +104,7 @@ ownerRouter.get("/verify", function(req, res) {
         console.log(err);
       } else {
         data.Items.forEach(function(item) {
-          if (item.userID == req.query.id) {
+          if (item.ownerID == req.query.id) {
             console.log("user exists");
             console.log("email is verified");
             var params = {
@@ -128,6 +129,10 @@ ownerRouter.get("/verify", function(req, res) {
             res.end(
               "<h1>Email " + mailOptions.to + " is been Successfully verified"
             );
+          } else {
+            console.log(
+              "item.userID is" + item.ownerID + "req.userID is" + req.userID
+            );
           }
         });
       }
@@ -137,7 +142,7 @@ ownerRouter.get("/verify", function(req, res) {
   }
 });
 
-ownerRouter.post("/login/:emailaddress/:password", function(req, res) {
+ownerRouter.post("/loginOwner", function(req, res) {
   var idParams = {
     TableName: "ownerDatabase"
   };
@@ -147,54 +152,53 @@ ownerRouter.post("/login/:emailaddress/:password", function(req, res) {
     } else {
       data.Items.forEach(function(item) {
         if (
-          item.username == req.params.emailaddress &&
-          item.password == req.params.password &&
+          item.username == req.body.username &&
+          item.password == req.body.password &&
           item.isVerified == true
         ) {
           console.log("you have successfully logged in!");
         } else {
           console.log("there is an error in your login screen");
+          console.log(req.body.email);
+          console.log(req.body.password);
         }
       });
     }
   });
 });
 //modify an Owner
-ownerRouter.post(
-  "/modifyOwner/:ownerID/:firstName/:lastName/:emailAddress/:phoneNumber/:physicalAddress",
-  (req, res) => {
-    var params = {
-      TableName: "ownerDatabase",
-      Key: {
-        ownerID: req.params.ownerID
-      },
-      UpdateExpression:
-        "set firstName =:x, lastName =:y, emailAddress=:z, phoneNumber=:a, physicalAddress=:b",
-      ExpressionAttributeValues: {
-        ":x": req.params.firstName,
-        ":y": req.params.lastName,
-        ":z": req.params.emailAddress,
-        ":a": req.params.phoneNumber,
-        ":b": req.params.physicalAddress
-      },
-      ReturnValues: "UPDATED_NEW"
-    };
-    docClient.update(params, function(err, data) {
-      if (err) {
-        console.error("unable to update item", err);
-      } else {
-        console.log("success");
-      }
-    });
-  }
-);
-
-//delete an Owner
-ownerRouter.post("/deleteOwner/:ownerID", (req, res) => {
+ownerRouter.post("/modifyOwner", (req, res) => {
   var params = {
     TableName: "ownerDatabase",
     Key: {
-      requestID: req.params.ownerID
+      ownerID: req.body.ownerID
+    },
+    UpdateExpression:
+      "set firstName =:x, lastName =:y, emailAddress=:z, phoneNumber=:a, physicalAddress=:b",
+    ExpressionAttributeValues: {
+      ":x": req.body.firstName,
+      ":y": req.body.lastName,
+      ":z": req.body.emailAddress,
+      ":a": req.body.phoneNumber,
+      ":b": req.body.physicalAddress
+    },
+    ReturnValues: "UPDATED_NEW"
+  };
+  docClient.update(params, function(err, data) {
+    if (err) {
+      console.error("unable to update item", err);
+    } else {
+      console.log("success");
+    }
+  });
+});
+
+//delete an Owner
+ownerRouter.post("/deleteOwner", (req, res) => {
+  var params = {
+    TableName: "ownerDatabase",
+    Key: {
+      requestID: req.body.ownerID
     }
   };
   docClient.delete(params, (err, data) => {

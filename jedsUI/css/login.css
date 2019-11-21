@@ -38,10 +38,15 @@ body {
 	margin-bottom: 0 !important;
 }
 
-input {
+.search_input {
 	height: 70px !important;
 	font-size: 28px !important;
 }
 #search_button {
 	width: 70px !important;
+}
+.form-actions {
+	margin: 0;
+	background-color: transparent;
+	text-align: center;
 }
