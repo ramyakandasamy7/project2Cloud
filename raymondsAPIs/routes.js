@@ -14,6 +14,9 @@ var express = require('express')
     .get(todoList.showhome);
   app.route("/findgym")
     .post(todoList.findgym);
+    
+  app.route("/gyminfo/:id")
+  .get(todoList.showinfo);
 }
 
 
