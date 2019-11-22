@@ -1,7 +1,7 @@
 const gym = require("express");
 const gymRouter = gym.Router();
 const aws = require("aws-sdk");
-const bodyParser = require("body-Parser");
+const bodyParser = require("body-parser");
 gymRouter.use(bodyParser.json());
 gymRouter.use(bodyParser.urlencoded({ extended: false }));
 

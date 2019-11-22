@@ -1,10 +1,11 @@
 const user = require("express");
 const userRouter = user.Router();
 const aws = require("aws-sdk");
-const bodyParser = require("body-Parser");
+const bodyParser = require("body-parser");
 var users = new Array();
 const nodemailer = require("nodemailer");
-
+userRouter.use(bodyParser.json());
+userRouter.use(bodyParser.urlencoded({ extended: false }));
 aws.config.update({
   region: "us-east-1",
   endpoint: "http://dynamodb.us-east-1.amazonaws.com"
@@ -17,9 +18,6 @@ var smtpTransport = nodemailer.createTransport({
     pass: "garagegym123!"
   }
 });
-//create new user
-userRouter.use(bodyParser.json());
-userRouter.use(bodyParser.urlencoded({ extended: false }));
 
 /** method to create new user. First, it checks to see if the username already exists. If not, it will add the user to the database and send an email */
 
@@ -135,8 +133,7 @@ userRouter.get("/verifyUser", function(req, res) {
                 return res.status(400).json({ error: err });
               } else {
                 return res.status(200).json({
-                  message:
-                    JSON.stringify(data) + " has been successfully verified!"
+                  message: emailAddress + " has been successfully verified!"
                 });
               }
             });
@@ -186,11 +183,14 @@ userRouter.post("/loginUser", function(req, res) {
     if (message == true) {
       return res
         .status(200)
-        .json({ message: req.body.username + "is successful in logging in" });
+        .json({ message: req.body.username + " is successful in logging in" });
     } else {
       return res.status(400).json({
         message:
-          req.body.username + " or " + req.body.password + "does not exist"
+          req.body.username +
+          " or " +
+          req.body.password +
+          " does not exist or has not been verified"
       });
     }
   });

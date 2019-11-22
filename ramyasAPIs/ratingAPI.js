@@ -1,7 +1,7 @@
 const request = require("express");
 const ratingRouter = request.Router();
 const aws = require("aws-sdk");
-const bodyParser = require("body-Parser");
+const bodyParser = require("body-parser");
 ratingRouter.use(bodyParser.json());
 ratingRouter.use(bodyParser.urlencoded({ extended: false }));
 aws.config.update({

@@ -2,7 +2,7 @@ const owner = require("express");
 const ownerRouter = owner.Router();
 const aws = require("aws-sdk");
 const nodemailer = require("nodemailer");
-const bodyParser = require("body-Parser");
+const bodyParser = require("body-parser");
 const s3 = new aws.S3({ apiVersion: "2006-03-1" });
 aws.config.update({
   region: "us-east-1",
@@ -83,13 +83,13 @@ ownerRouter.post("/createnewOwner", (req, res) => {
               return res.status(400).json({
                 message:
                   emailAddress +
-                  " has been added to database but email failed to send"
+                  " has been added to owner database but email failed to send"
               });
             } else {
               return res.status(200).json({
                 message:
                   emailAddress +
-                  " has been added to the user database and email has been sent"
+                  " has been added to the owner database and email has been sent"
               });
             }
           });
@@ -191,7 +191,7 @@ ownerRouter.get("/verifyOwner", function(req, res) {
                 res.status(400).json({ error: err });
               } else {
                 res.status(200).json({
-                  message: req.query.id + " has been successfully verified!"
+                  message: mailOptions.to + " has been successfully verified!"
                 });
               }
             });
