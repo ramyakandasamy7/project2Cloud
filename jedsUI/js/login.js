@@ -40,13 +40,13 @@ function renderModals(id) {
 									+"<div class='input-group-prepend'>"
 										+"<span class='input-group-text'><i class='fas fa-envelope'></i></span>"
 									+"</div>"
-									+"<input type='text' id='login_email' class='form-control input-sm' placeholder='Email'>"
+									+"<input type='text' id='login_email' class='form-control input-sm' placeholder='Email' value='jedv86@yahoo.com'>"
 								+"</div>"
 								+"<div class='input-group form-group'>"
 									+"<div class='input-group-prepend'>"
 										+"<span class='input-group-text'><i class='fas fa-key'></i></span>"
 									+"</div>"
-									+"<input type='password' id='login_password' class='form-control input-sm' placeholder='Password'>"
+									+"<input type='password' id='login_password' class='form-control input-sm' placeholder='Password' value='testpassword'>"
 								+"</div>"
 								+"<div class='form-actions'>"
 									+"<button type='button' class='btn btn-primary btn-sm'>Login</button>"
@@ -59,7 +59,7 @@ function renderModals(id) {
 										+"Garage Gym Goer"
 									+"</label>"
 								+"</div>"
-								+"<div class='form-check'>"
+								+"<div class='form-check' style='margin-bottom: 10px;'>"
 									+"<input class='form-check-input' type='radio' name='accountType' id='accountTypeOwner' value='owner'>"
 									+"<label class='form-check-label' for='accountTypeOwner'>"
 										+"Garage Gym Owner"
@@ -69,7 +69,7 @@ function renderModals(id) {
 									+"<div class='input-group-prepend'>"
 										+"<span class='input-group-text'><i class='fas fa-envelope'></i></span>"
 									+"</div>"
-									+"<input type='text' id='register_email' class='form-control input-sm' placeholder='Email' value='test.account@test.com'>"
+									+"<input type='text' id='register_email' class='form-control input-sm' placeholder='Email' value='jedv86@yahoo.com'>"
 								+"</div>"
 								+"<div class='input-group form-group'>"
 									+"<div class='input-group-prepend'>"
@@ -129,10 +129,15 @@ function processRegistration() {
 		return;
 	}
 
-	console.log(gymgoer);
-
 	if (gymgoer) {
-		console.log("Gym Goer");
+		$.ajax({
+			url: 'http://3.95.182.111:3000/createnewUser',
+			type: 'POST',
+			data: {'register_email':email, 'register_password':password, 'register_location':address}
+		}).done(function(data){
+			console.log(data);
+			window.location.replace("http://gg.mymsseprojects.com/verify_account");
+		});
 	} else {
 		console.log("Gym Owner");
 	}

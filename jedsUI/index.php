@@ -22,6 +22,6 @@ session_start();
 		</script>
 	</head>
 	<body>
-		<div id='root'>
+		<div id='root'></div>
 	</body>
 </html>
