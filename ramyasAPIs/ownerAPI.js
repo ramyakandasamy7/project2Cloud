@@ -2,7 +2,7 @@ const owner = require("express");
 const ownerRouter = owner.Router();
 const aws = require("aws-sdk");
 const nodemailer = require("nodemailer");
-const bodyParser = require("body-Parser");
+const bodyParser = require("body-parser");
 const s3 = new aws.S3({ apiVersion: "2006-03-1" });
 aws.config.update({
   region: "us-east-1",
@@ -11,28 +11,100 @@ aws.config.update({
 var docClient = new aws.DynamoDB.DocumentClient();
 //ownerAPI
 var owners = new Array();
-ownerRouter.use(bodyParser.json());
-ownerRouter.use(bodyParser.urlencoded({ extended: false }));
+
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "INSERT"
-    pass: "INSERT"
+    user: "garagegymcloud@gmail.com",
+    pass: "garagegym123!"
   }
 });
 var mailOptions;
-//create an Owner
-//first name, last name, phone number
-//email address
-//password
-ownerRouter.post(
+ownerRouter.use(bodyParser.json());
+ownerRouter.use(bodyParser.urlencoded({ extended: false }));
+
+ownerRouter.post("/createnewOwner", (req, res) => {
+  let promise = new Promise(function(resolve, reject) {
+    var idParams = {
+      TableName: "ownerDatabase"
+    };
+    docClient.scan(idParams, function(err, data) {
+      if (err) {
+        reject("false");
+      } else {
+        data.Items.forEach(function(item) {
+          if (item.username == req.body.register_email) {
+            console.log("username exists!");
+            resolve(true);
+          }
+        });
+      }
+      resolve(false);
+    });
+  });
+  promise.then(function(message) {
+    // if user already exists
+    if (message == true) {
+      return res
+        .status(400)
+        .json({ message: req.body.register_email + " already exists" });
+    }
+    if (message == false) {
+      var ID = Math.random()
+        .toString(36)
+        .substr(2, 9);
+      var paramsaddOwner = {
+        TableName: "ownerDatabase",
+        Item: {
+          ownerID: ID,
+          isVerified: false,
+          username: req.body.register_email,
+          password: req.body.register_password,
+          location: req.body.register_location
+        }
+      };
+      var link = "http://localhost:3000" + "/verifyOwner?id=" + ID;
+      var emailAddress = req.body.register_email;
+      mailOptions = {
+        to: emailAddress,
+        subject: "Please confirm your email address",
+        html:
+          "Hello,<br> Please Click on the link to verify your email.<br><a href=" +
+          link +
+          ">Click here to verify</a>"
+      };
+      //add new user into dynamoDB database; if successful, send the email
+      docClient.put(paramsaddOwner, function(err, data) {
+        if (err) {
+          res.status(400).json({ error: err });
+        } else {
+          smtpTransport.sendMail(mailOptions, (err, response) => {
+            if (err) {
+              return res.status(400).json({
+                message:
+                  emailAddress +
+                  " has been added to owner database but email failed to send"
+              });
+            } else {
+              return res.status(200).json({
+                message:
+                  emailAddress +
+                  " has been added to the owner database and email has been sent"
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+});
+/*ownerRouter.post(
   "/createnewOwner", //:firstName/:lastName/:emailAddress/:phoneNumber/:password",
   (req, res) => {
     aws.config.update({
       region: "us-east-1",
       endpoint: "http://dynamodb.us-east-1.amazonaws.com"
     });
-    console.log("create new owner" + JSON.stringify(req.body));
     var ID = Math.random()
       .toString(36)
       .substr(2, 9);
@@ -41,19 +113,15 @@ ownerRouter.post(
       Item: {
         ownerID: ID,
         isVerified: false,
-        //Name: req.params.firstName + " " + req.params.lastName,
         username: req.body.register_email,
-        //paymentInformation: req.params.paymentInformation,
         password: req.body.register_password,
         location: req.body.register_location
-        //emailAddress: req.body.register_email
-        //phoneNumber: req.params.phoneNumber,
       }
     };
     var link = "http://localhost:3000" + "/verifyOwner?id=" + ID;
-    var email = req.body.register_email;
+    var emailAddress = req.body.register_email;
     mailOptions = {
-      to: email,
+      to: emailAddress,
       subject: "Please confirm your email address",
       html:
         "Hello,<br> Thank you for deciding to be an owner on our service. Please Click on the link to verify your email.<br><a href=" +
@@ -62,25 +130,27 @@ ownerRouter.post(
     };
     docClient.put(paramsaddOwner, function(err, data) {
       if (err) {
-        console.log("Unable to add item" + JSON.stringify(err));
       } else {
-        console.log("Added item", JSON.stringify(data, null, 2));
         smtpTransport.sendMail(mailOptions, (err, response) => {
           if (err) {
-            console.log(err);
+            res.status(400).json({ error: err });
           } else {
-            console.log("message sent" + response.message);
+            res.status(200).json({
+              email:
+                emailAddress +
+                " owner has been added to database and email has been sent"
+            });
           }
         });
         aws.config.update({
           region: "us-west",
           endpoint: "https://s3.amazonaws.com"
         });
-        //name folder the id of the owner and pictures should be easier to parse
       }
     });
   }
-);
+);*/
+
 //verify email address
 ownerRouter.get("/verifyOwner", function(req, res) {
   console.log(req.protocol + ":/" + req.get("host"));
@@ -101,12 +171,10 @@ ownerRouter.get("/verifyOwner", function(req, res) {
     };
     docClient.query(idParams, function(err, data) {
       if (err) {
-        console.log(err);
+        res.status(400).json({ error: err });
       } else {
         data.Items.forEach(function(item) {
           if (item.ownerID == req.query.id) {
-            console.log("user exists");
-            console.log("email is verified");
             var params = {
               TableName: "ownerDatabase",
               Key: {
@@ -120,48 +188,63 @@ ownerRouter.get("/verifyOwner", function(req, res) {
             };
             docClient.update(params, function(err, data) {
               if (err) {
-                console.log(err);
+                res.status(400).json({ error: err });
               } else {
-                console.log("Successfully verified!");
+                res.status(200).json({
+                  message: mailOptions.to + " has been successfully verified!"
+                });
               }
             });
-
-            res.end(
-              "<h1>Email " + mailOptions.to + " is been Successfully verified"
-            );
-          } else {
-            console.log(
-              "item.userID is" + item.ownerID + "req.userID is" + req.userID
-            );
           }
         });
       }
     });
   } else {
-    console.log("bad request");
+    res.status(400).json({
+      message:
+        req.protocol +
+        ":/" +
+        req.get("host") +
+        " is a invalid verification link"
+    });
   }
 });
-
+/** method to login owners. Checks to see if owner username and password is in database */
 ownerRouter.post("/loginOwner", function(req, res) {
-  var idParams = {
-    TableName: "ownerDatabase"
-  };
-  docClient.scan(idParams, function(err, data) {
-    if (err) {
-      console.log(err);
+  let promise = new Promise(function(resolve, reject) {
+    var idParams = {
+      TableName: "ownerDatabase"
+    };
+    docClient.scan(idParams, function(err, data) {
+      if (err) {
+        reject("false");
+      } else {
+        data.Items.forEach(function(item) {
+          if (
+            item.username == req.body.username &&
+            item.password == req.body.password &&
+            item.isVerified == true
+          ) {
+            console.log(req.body.username);
+            console.log(req.body.password);
+            exists = true;
+            resolve(true);
+          }
+        });
+      }
+      resolve(false);
+    });
+  });
+
+  promise.then(function(message) {
+    if (message == true) {
+      return res
+        .status(200)
+        .json({ message: req.body.username + "is successful in logging in" });
     } else {
-      data.Items.forEach(function(item) {
-        if (
-          item.username == req.body.username &&
-          item.password == req.body.password &&
-          item.isVerified == true
-        ) {
-          console.log("you have successfully logged in!");
-        } else {
-          console.log("there is an error in your login screen");
-          console.log(req.body.email);
-          console.log(req.body.password);
-        }
+      return res.status(400).json({
+        message:
+          req.body.username + " or " + req.body.password + "does not exist"
       });
     }
   });
@@ -176,8 +259,6 @@ ownerRouter.post("/modifyOwner", (req, res) => {
     UpdateExpression:
       "set firstName =:x, lastName =:y, emailAddress=:z, phoneNumber=:a, physicalAddress=:b",
     ExpressionAttributeValues: {
-      ":x": req.body.firstName,
-      ":y": req.body.lastName,
       ":z": req.body.emailAddress,
       ":a": req.body.phoneNumber,
       ":b": req.body.physicalAddress
@@ -186,9 +267,9 @@ ownerRouter.post("/modifyOwner", (req, res) => {
   };
   docClient.update(params, function(err, data) {
     if (err) {
-      console.error("unable to update item", err);
+      res.status(400).json({ error: err });
     } else {
-      console.log("success");
+      res.status(200).json({ message: req.body.ownerID + " has been updated" });
     }
   });
 });
@@ -198,14 +279,16 @@ ownerRouter.post("/deleteOwner", (req, res) => {
   var params = {
     TableName: "ownerDatabase",
     Key: {
-      requestID: req.body.ownerID
+      ownerID: req.body.ownerID
     }
   };
   docClient.delete(params, (err, data) => {
     if (err) {
-      console.log("unable to delete item");
+      return res.status(400).json({ error: err });
     } else {
-      console.log("Delete Item succeeded");
+      return res
+        .status(200)
+        .json({ message: req.body.ownerID + "has been deleted" });
     }
   });
 });

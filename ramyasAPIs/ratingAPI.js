@@ -1,7 +1,7 @@
 const request = require("express");
 const ratingRouter = request.Router();
 const aws = require("aws-sdk");
-const bodyParser = require("body-Parser");
+const bodyParser = require("body-parser");
 ratingRouter.use(bodyParser.json());
 ratingRouter.use(bodyParser.urlencoded({ extended: false }));
 aws.config.update({
@@ -9,6 +9,7 @@ aws.config.update({
   endpoint: "http://dynamodb.us-east-1.amazonaws.com"
 });
 var docClient = new aws.DynamoDB.DocumentClient();
+
 ratingRouter.post("/createrating", (req, res) => {
   var ID = Math.random()
     .toString(36)
@@ -24,9 +25,35 @@ ratingRouter.post("/createrating", (req, res) => {
   };
   docClient.put(paramsaddRating, function(err, data) {
     if (err) {
-      console.log("Unable to add item" + JSON.stringify(err));
+      return res.status(400).json({ message: "unable to add request" + err });
     } else {
-      console.log("Added item", JSON.stringify(data, null, 2));
+      return res
+        .status(200)
+        .json({ message: ID + "added to request database" });
+    }
+  });
+});
+
+ratingRouter.post("/deleterating", (req, res) => {
+  aws.config.update({
+    region: "us-east-1",
+    endpoint: "http://dynamodb.us-east-1.amazonaws.com"
+  });
+  var params = {
+    TableName: "requestDatabase",
+    Key: {
+      requestID: req.body.requestID
+    }
+  };
+  docClient.delete(params, (err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: "unable to delete gym " + req.body.requestID + " error is:" + err
+      });
+    } else {
+      return res
+        .status(200)
+        .json({ message: req.body.requestID + " request deleted" });
     }
   });
 });
