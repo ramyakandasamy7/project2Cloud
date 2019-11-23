@@ -1,10 +1,71 @@
-<div style="float:right; margin-right:10px; clear:both">
+<div class="slide-in-content"  style="height:100%;background-color:black;color:yellow">
+  <div>
         <ul>
           <li>Gym Owner: <%= gyminfo[0].gymOwner %></li>
           <li>Attributes: <%= gyminfo[0].attributes %></li>
-          <li>Cost: <%= gyminfo[0].cost %> </li>
+          <li>Cost: $<%= gyminfo[0].cost %> </li>
           <li>Location: <%= gyminfo[0].locationofGym %></li>
-          <li>Rating: <%= gyminfo[0].rating %></li>
+          <li>Rating: <%= gyminfo[0].rating %>     
+            <% if (gyminfo[0].rating >= 1) {%><span class="fa fa-star checked"></span> <% } else {%> <span class="fa fa-star"></span> <%}%>
+            <% if (gyminfo[0].rating >= 2) {%><span class="fa fa-star checked"></span> <% } else {%> <span class="fa fa-star"></span> <%}%>
+            <% if (gyminfo[0].rating >= 3) {%><span class="fa fa-star checked"></span> <% } else {%> <span class="fa fa-star"></span> <%}%>
+            <% if (gyminfo[0].rating >= 4) {%><span class="fa fa-star checked"></span> <% } else {%> <span class="fa fa-star"></span> <%}%>
+            <% if (gyminfo[0].rating >= 5) {%><span class="fa fa-star checked"></span> <% } else {%> <span class="fa fa-star"></span> <%}%>
+          </li>
         </ul>
-        <button>Reserve Now</button>
+        <div class="slideshow-container">
+
+          <div class="mySlides fade">
+            <div class="numbertext">1 / 2</div>
+            <img src="https://media.istockphoto.com/vectors/gym-01-flat-colorful-illustrations-vector-id639280710?k=6&m=639280710&s=612x612&w=0&h=k27ZoJLOYhQpDWEV9nXDPuMjpmR66FQ8L6ncAdlZSl0=" style="width:100%">
+          </div>
+          
+          <div class="mySlides fade">
+            <div class="numbertext">2 / 2</div>
+            <img src="https://i.etsystatic.com/15433923/r/il/42cb65/1269715624/il_570xN.1269715624_4r9e.jpg" style="width:100%">
+          </div>
+          
+          
+          <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+          <a class="next" onclick="plusSlides(1)">&#10095;</a>
+          
+          </div>
+          <br>
+          
+          <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span> 
+            <span class="dot" onclick="currentSlide(2)"></span> 
+          </div>
+          
+          <script>
+          var slideIndex = 1;
+          showSlides(slideIndex);
+          
+          function plusSlides(n) {
+            showSlides(slideIndex += n);
+          }
+          
+          function currentSlide(n) {
+            showSlides(slideIndex = n);
+          }
+          
+          function showSlides(n) {
+            var i;
+            var slides = document.getElementsByClassName("mySlides");
+            var dots = document.getElementsByClassName("dot");
+            if (n > slides.length) {slideIndex = 1}    
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex-1].style.display = "block";  
+            dots[slideIndex-1].className += " active";
+          }
+          </script>
+          
+        <button onclick="location.href='LINK TO RESERVATION PAGE HERE'" style="margin-left:40%">Reserve Now</button>
+        </div>
       </div>
