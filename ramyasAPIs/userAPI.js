@@ -2,7 +2,6 @@ const user = require("express");
 const userRouter = user.Router();
 const aws = require("aws-sdk");
 const bodyParser = require("body-parser");
-var users = new Array();
 const nodemailer = require("nodemailer");
 userRouter.use(bodyParser.json());
 userRouter.use(bodyParser.urlencoded({ extended: false }));
@@ -61,7 +60,7 @@ userRouter.post("/createnewUser", (req, res) => {
           location: req.body.register_location
         }
       };
-      var link = "http://localhost:3000" + "/verifyUser?id=" + ID;
+      var link = "http://gg.mymsseprojects.com/user_verification?id=" + ID;
       var emailAddress = req.body.register_email;
       mailOptions = {
         to: emailAddress,
@@ -99,8 +98,8 @@ userRouter.post("/createnewUser", (req, res) => {
 
 //requires verification of new User
 userRouter.get("/verifyUser", function(req, res) {
-  console.log(req.protocol + ":/" + req.get("host"));
-  if (req.protocol + "://" + req.get("host") == "http://" + "localhost:3000") {
+  console.log(req.protocol + "://" + req.get("host"));
+  if (req.protocol + "://" + req.get("host") == "http://3.95.182.111:3000") {
     var idParams = {
       TableName: "userDatabase",
       KeyConditionExpression: "#userID =:userID",
@@ -133,7 +132,7 @@ userRouter.get("/verifyUser", function(req, res) {
                 return res.status(400).json({ error: err });
               } else {
                 return res.status(200).json({
-                  message: emailAddress + " has been successfully verified!"
+                  message: "Ok"
                 });
               }
             });
@@ -154,6 +153,7 @@ userRouter.get("/verifyUser", function(req, res) {
 
 //logs in users
 userRouter.post("/loginUser", function(req, res) {
+  var u,i;
   let promise = new Promise(function(resolve, reject) {
     var idParams = {
       TableName: "userDatabase"
@@ -168,6 +168,8 @@ userRouter.post("/loginUser", function(req, res) {
             item.password == req.body.password &&
             item.isVerified == true
           ) {
+            u = item.username;
+	    i = item.userID;
             console.log(req.body.username);
             console.log(req.body.password);
             exists = true;
@@ -181,9 +183,13 @@ userRouter.post("/loginUser", function(req, res) {
 
   promise.then(function(message) {
     if (message == true) {
+      let data = {
+      	username: u,
+	id: i
+      };
       return res
         .status(200)
-        .json({ message: req.body.username + " is successful in logging in" });
+        .json({ message: req.body.username + " is successful in logging in", data: data });
     } else {
       return res.status(400).json({
         message:
@@ -242,6 +248,7 @@ userRouter.get("/users", (req, res) => {
   var params = {
     TableName: "userDatabase"
   };
+  var users = [];
   docClient.scan(params, (err, data) => {
     data.Items.forEach(function(item) {
       users.push(item);
