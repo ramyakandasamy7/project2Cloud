@@ -20,6 +20,7 @@ gymRouter.post("/creategym", (req, res) => {
       gymID: ID,
       gymOwner: req.body.ownerID,
       cost: req.body.cost,
+      rating: 0,
       locationofGym: req.body.location,
       attributes: req.body.attributes
     }
@@ -28,13 +29,13 @@ gymRouter.post("/creategym", (req, res) => {
     if (err) {
       return res.status(400).json({ error: err });
     } else {
-      return createFolder(ID);
+      return createFolder(ID, res);
       //name folder the id of the owner and pictures should be easier to parse
     }
   });
 });
 
-function createFolder(ID) {
+function createFolder(ID, res) {
   aws.config.update({
     region: "us-west",
     endpoint: "https://s3.amazonaws.com"
@@ -55,7 +56,7 @@ function createFolder(ID) {
 }
 
 //delete gym
-gymRouter.post("/delete", (req, res) => {
+gymRouter.post("/deletegym", (req, res) => {
   aws.config.update({
     region: "us-east-1",
     endpoint: "http://dynamodb.us-east-1.amazonaws.com"
@@ -107,11 +108,35 @@ gymRouter.post("/modifygym", (req, res) => {
   });
 });
 
+//get all gyms from owner
+gymRouter.get("/gyms/:id", (req, res) => {
+	console.log(req.params);
+	var params = {
+		TableName: "gymDatabase",
+		KeyConditionExpression: 'gymOwner = :g',
+		ExpressionAttributeValues: {
+			':g' : req.params.id
+		}
+	};
+	docClient.query(params, function(err, data) {
+		if (err) {
+			//res.status(400);
+			res.send(err);
+			console.log(err);
+		} else {
+			console.log(data);
+			res.status(200);
+			res.json(data);
+		}
+	});
+});
+
 //get all gyms
 gymRouter.get("/gyms", (req, res) => {
   var params = {
     TableName: "gymDatabase"
   };
+  var requests = [];
   docClient.scan(params, (err, data) => {
     data.Items.forEach(function(item) {
       console.log(item);

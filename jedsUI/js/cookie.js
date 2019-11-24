@@ -1,7 +1,7 @@
 
 function checkCookie() {
 	if (!!Cookies.get('userID')) {
-		return {userID: Cookies.get('userID'), username: Cookies.get('username')};
+		return {userID: Cookies.get('userID'), username: Cookies.get('username'), accType: Cookies.get('mode')};
 	} else {
 		return false;
 	}

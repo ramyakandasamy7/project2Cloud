@@ -18,7 +18,7 @@ function checkIfLoggedIn() {
 	if (userInfo !== false) {
 		window.userID = userInfo.userID;
 		window.username = userInfo.username;
-		window.accountType = userInfo.mode;
+		window.accountType = userInfo.acctType;
 		/* Thinking about pulling user data when cookie exists
 		 *but may be necessary...?
 		 * */
