@@ -110,25 +110,26 @@ gymRouter.post("/modifygym", (req, res) => {
 
 //get all gyms from owner
 gymRouter.get("/gyms/:id", (req, res) => {
-	console.log(req.params);
-	var params = {
-		TableName: "gymDatabase",
-		KeyConditionExpression: 'gymOwner = :g',
-		ExpressionAttributeValues: {
-			':g' : req.params.id
-		}
-	};
-	docClient.query(params, function(err, data) {
-		if (err) {
-			//res.status(400);
-			res.send(err);
-			console.log(err);
-		} else {
-			console.log(data);
-			res.status(200);
-			res.json(data);
-		}
-	});
+  console.log(req.params);
+  var params = {
+    TableName: "gymDatabase",
+    IndexName: "gymOwner-index",
+    KeyConditionExpression: "gymOwner = :g",
+    ExpressionAttributeValues: {
+      ":g": req.params.id
+    }
+  };
+  docClient.query(params, function(err, data) {
+    if (err) {
+      //res.status(400);
+      res.send(err);
+      console.log(err);
+    } else {
+      console.log(data);
+      res.status(200);
+      res.json(data);
+    }
+  });
 });
 
 //get all gyms
