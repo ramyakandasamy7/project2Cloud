@@ -10,7 +10,6 @@ aws.config.update({
 });
 var docClient = new aws.DynamoDB.DocumentClient();
 //ownerAPI
-var owners = new Array();
 
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
@@ -63,7 +62,7 @@ ownerRouter.post("/createnewOwner", (req, res) => {
           location: req.body.register_location
         }
       };
-      var link = "http://localhost:3000" + "/verifyOwner?id=" + ID;
+      var link = "http://gg.mymsseprojects.com/owner_verification?id=" + ID;
       var emailAddress = req.body.register_email;
       mailOptions = {
         to: emailAddress,
@@ -80,6 +79,7 @@ ownerRouter.post("/createnewOwner", (req, res) => {
         } else {
           smtpTransport.sendMail(mailOptions, (err, response) => {
             if (err) {
+	      console.log(err);
               return res.status(400).json({
                 message:
                   emailAddress +
@@ -153,12 +153,8 @@ ownerRouter.post("/createnewOwner", (req, res) => {
 
 //verify email address
 ownerRouter.get("/verifyOwner", function(req, res) {
-  console.log(req.protocol + ":/" + req.get("host"));
-  if (req.protocol + "://" + req.get("host") == "http://" + "localhost:3000") {
-    console.log(
-      "Domain is matched. Information is from Authentic email" +
-        JSON.stringify(req.query)
-    );
+  console.log(req.protocol + "://" + req.get("host"));
+  if (req.protocol + "://" + req.get("host") == "http://3.95.182.111:3000") {
     var idParams = {
       TableName: "ownerDatabase",
       KeyConditionExpression: "#ownerID =:ownerID",
@@ -191,7 +187,7 @@ ownerRouter.get("/verifyOwner", function(req, res) {
                 res.status(400).json({ error: err });
               } else {
                 res.status(200).json({
-                  message: mailOptions.to + " has been successfully verified!"
+                  message: "Ok"
                 });
               }
             });
@@ -211,6 +207,7 @@ ownerRouter.get("/verifyOwner", function(req, res) {
 });
 /** method to login owners. Checks to see if owner username and password is in database */
 ownerRouter.post("/loginOwner", function(req, res) {
+  var u,i;
   let promise = new Promise(function(resolve, reject) {
     var idParams = {
       TableName: "ownerDatabase"
@@ -225,6 +222,8 @@ ownerRouter.post("/loginOwner", function(req, res) {
             item.password == req.body.password &&
             item.isVerified == true
           ) {
+	    u = item.username;
+	    i = item.ownerID;
             console.log(req.body.username);
             console.log(req.body.password);
             exists = true;
@@ -238,9 +237,13 @@ ownerRouter.post("/loginOwner", function(req, res) {
 
   promise.then(function(message) {
     if (message == true) {
+      let data = {
+	username : u,
+	id: i
+      };
       return res
         .status(200)
-        .json({ message: req.body.username + "is successful in logging in" });
+        .json({ message: req.body.username + "is successful in logging in", data: data });
     } else {
       return res.status(400).json({
         message:
@@ -293,11 +296,32 @@ ownerRouter.post("/deleteOwner", (req, res) => {
   });
 });
 
+ownerRouter.get("/owners/:id", (req, res) => {
+	console.log(req.params.id);
+	var params = {
+		TableName: "ownerDatabase",
+		Key: {
+			ownerID: req.params.id
+		}
+	};
+	docClient.get(params, function(err, data) {
+		if (err) {
+			res.status(400);
+			res.send(err);
+		} else {
+			console.log(data);
+			res.status(200);
+			res.json(data);
+		}
+	});
+});
+
 //get all Owners
 ownerRouter.get("/owners", (req, res) => {
   var params = {
     TableName: "ownerDatabase"
   };
+  var owners = [];
   docClient.scan(params, (err, data) => {
     data.Items.forEach(function(item) {
       console.log(item);
