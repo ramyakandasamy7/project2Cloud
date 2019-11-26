@@ -13,6 +13,10 @@ exports.showhome =  function(req,res) {
   }
 exports.showinfo = function(req, res) {
     var requests = [];
+    var ratingsNumber = 0;
+    var numRatings = 0;
+    var gymRating = 0;
+    var temp = 0;
     var params = {
         TableName: "gymDatabase",
         KeyConditionExpression: "#gymID = :gymid",
@@ -23,14 +27,36 @@ exports.showinfo = function(req, res) {
             ":gymid": req.params.id
             }
       };
+      var ratings = {
+        TableName: "ratingDatabase",  
+        FilterExpression : 'gymID = :gymid',
+        ExpressionAttributeValues: {
+            ":gymid": req.params.id
+            }
+      };
+      docClient.scan(ratings, (err,data) =>{
+        if(err) console.log(err)
+        else {
+      data.Items.forEach(function(item) {
+        numRatings = numRatings + 1;
+        ratingsNumber = ratingsNumber + item.rating;
+      });
+      if(numRatings == 0) {
+        gymRating = 0
+      }
+      else {
+        gymRating = ratingsNumber/numRatings;
+      }
+      }
+    });
       docClient.query(params, (err, data) => {
           if(err) console.log(err)
           else {
         data.Items.forEach(function(item) {
           requests.push(item);
-          console.log(requests);
+          temp = item;
         });
-        res.render('gyminfo', {gyminfo: requests});
+        res.render('gyminfo', {gyminfo: requests, rating: gymRating, newinfo: temp});
     }
       });
 }
