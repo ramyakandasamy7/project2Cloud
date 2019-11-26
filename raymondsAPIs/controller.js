@@ -47,19 +47,35 @@ exports.showinfo = function(req, res) {
       else {
         gymRating = ratingsNumber/numRatings;
       }
+      docClient.query(params, (err, data) => {
+        if(err) console.log(err)
+        else {
+      data.Items.forEach(function(item) {
+        requests.push(item);
+        temp = item;
+      });
+      var owners = {
+        TableName: "ownerDatabase",  
+        FilterExpression : 'ownerID = :id',
+        ExpressionAttributeValues: {
+            ":id": requests[0].gymOwner
+            }
+      };
+      docClient.scan(owners, (err,data) =>{
+        if(err) console.log(err)
+        else {
+          console.log(requests[0].gymOwner)
+      data.Items.forEach(function(item) {
+        res.render('gyminfo', {gyminfo: requests, rating: gymRating, owner: item.username, newinfo: temp});
+      });
+      
+  }
+    });
       }
     });
-      docClient.query(params, (err, data) => {
-          if(err) console.log(err)
-          else {
-        data.Items.forEach(function(item) {
-          requests.push(item);
-          temp = item;
-        });
-        res.render('gyminfo', {gyminfo: requests, rating: gymRating, newinfo: temp});
-    }
-      });
 }
+      });
+    }
 exports.findgym = function(req, res) {
     var requests = [];
     var params = {

@@ -165,6 +165,15 @@ function renderAppTitle(id) {
 				+"</div>"
 			+"</div>"
 		+"</div>"
+		+"<script>"
+			+"function fillin() {"
+				+"var autocomplete = null;"
+				+"var input = document.getElementById('search_input');"
+				+"autocomplete = new google.maps.places.Autocomplete(input);"
+		 	+"}"
+		+"</script>"
+  		+"<script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBdd-O6jMPlIBrnBsv1n9WF_Y3l5zCYVGA&libraries=places&callback=fillin'></script>"  
+
 	);
 }
 
