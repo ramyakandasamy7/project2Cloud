@@ -57,4 +57,40 @@ ratingRouter.post("/deleterating", (req, res) => {
     }
   });
 });
+
+ratingRouter.get("/ratings/:gymID", (req, res) => {
+  var params = {
+    TableName: "ratingDatabase",
+    IndexName: "gymID-index",
+    KeyConditionExpression: "gymID = :g",
+    ExpressionAttributeValues: {
+      ":g": req.params.gymID
+    }
+  };
+  docClient.query(params, function(err, data) {
+    if (err) {
+      //res.status(400);
+      res.send(err);
+      console.log(err);
+    } else {
+      console.log(data);
+      res.status(200);
+      res.json(data);
+    }
+  });
+});
+
+/*ratingRouter.get("/ratings", (req, res) => {
+  var params = {
+    TableName: "ratingDatabase"
+  };
+  var requests = [];
+  docClient.scan(params, (err, data) => {
+    data.Items.forEach(function(item) {
+      console.log(item);
+      requests.push(item);
+    });
+    res.send(requests);
+  });
+});*/
 module.exports = ratingRouter;
