@@ -173,14 +173,18 @@ gymRouter.get("/gymPicture/:id", (req, res) => {
     Bucket: "ramyakandasamy",
     Key: req.params.id + "/gym.jpg"
   };
-  const url = s3.getSignedUrl("getObject", params, function(err, data) {
+  const url =
+    "http://d2s1oz7w0n6e15.cloudfront.net/" + req.params.id + "/gym.jpg";
+  res.status(200);
+  res.json(url);
+  /*const url = s3.getSignedUrl("getObject", params, function(err, data) {
     if (err) {
       res.send(err);
     } else {
       res.status(200);
       res.json(data);
     }
-  });
+  });*/
 });
 
 //delete a gym
