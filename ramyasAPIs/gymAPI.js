@@ -107,7 +107,21 @@ gymRouter.post("/modifygym", (req, res) => {
     }
   });
 });
+gymRouter.post("/");
 
+gymRouter.get("/gympicture", (req, res) => {
+  aws.config.update({
+    region: "us-west",
+    endpoint: "https://s3.amazonaws.com"
+  });
+  const s3 = new aws.S3({ apiVersion: "2006-03-1" });
+  const params = {
+    Bucket: "ramyakandasamy",
+    Key: req.body.id + "/gym.jpg"
+  };
+  const url = s3.getSignedUrl("getObject", params);
+  console.log("url" + url);
+});
 //get all gyms from owner
 gymRouter.get("/gyms/:id", (req, res) => {
   console.log(req.params);
