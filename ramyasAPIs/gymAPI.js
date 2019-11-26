@@ -50,7 +50,9 @@ function createFolder(ID, res) {
     if (err) {
       return res.status(400).json({ error: err });
     } else {
-      return res.status(200).json({ message: ID + "folder created", gymID: ID });
+      return res
+        .status(200)
+        .json({ message: ID + "folder created", gymID: ID });
     }
   });
 }
@@ -110,58 +112,58 @@ gymRouter.post("/modifygym", (req, res) => {
 
 //upload a gym picture to Bucket
 gymRouter.post("/gymPictureUpload", (req, res) => {
-	console.log(req);
-	console.log(req.files);
-	var file = req.files.file;
-	var gymID = req.body.gymID;
-	var fileName = "gym.jpg";
-	var base64file = new Buffer(file.data.buffer, 'binary');
-	var folderKey = encodeURIComponent(gymID) + "/gym.jpg"; 
+  console.log(req);
+  console.log(req.files);
+  var file = req.files.file;
+  var gymID = req.body.gymID;
+  var fileName = "gym.jpg";
+  var base64file = new Buffer(file.data.buffer, "binary");
+  var folderKey = encodeURIComponent(gymID) + "/gym.jpg";
 
-	var upload = new aws.S3.ManagedUpload({
-		params: {
-			Bucket: "ramyakandasamy",
-			Key: folderKey,
-			Body: base64file,
-			ACL: "public-read"
-		}
-	});
+  var upload = new aws.S3.ManagedUpload({
+    params: {
+      Bucket: "ramyakandasamy",
+      Key: folderKey,
+      Body: base64file,
+      ACL: "public-read"
+    }
+  });
 
-	var promise = upload.promise();
+  var promise = upload.promise();
 
-	promise.then(
-		function(data) {
-			res.status(200);
-			res.send("ok");
-		},
-		function(err) {
-			res.status(400);
-			res.send(err);
-		}
-	);
+  promise.then(
+    function(data) {
+      res.status(200);
+      res.send("ok");
+    },
+    function(err) {
+      res.status(400);
+      res.send(err);
+    }
+  );
 });
 
 //get all Bucket folders
 gymRouter.get("/gymPictures", (req, res) => {
-	aws.config.update({
-    		region: "us-west",
-    		endpoint: "https://s3.amazonaws.com"
-  	});
-	const s3 = new aws.S3({ 
-		apiVersion: "2006-03-1",
-		params: { Bucket: "ramyakandasamy" }
-	});
-	s3.listObjects(function(err, data){
-		if (err) {
-			res.send(err);
-		}
-		res.status(200);
-		res.json(data);
-	});
+  aws.config.update({
+    region: "us-west",
+    endpoint: "https://s3.amazonaws.com"
+  });
+  const s3 = new aws.S3({
+    apiVersion: "2006-03-1",
+    params: { Bucket: "ramyakandasamy" }
+  });
+  s3.listObjects(function(err, data) {
+    if (err) {
+      res.send(err);
+    }
+    res.status(200);
+    res.json(data);
+  });
 });
 
 //get a gym picture
-gymRouter.get("/gymPicture", (req, res) => {
+gymRouter.get("/gymPicture/:id", (req, res) => {
   aws.config.update({
     region: "us-west",
     endpoint: "https://s3.amazonaws.com"
@@ -169,38 +171,39 @@ gymRouter.get("/gymPicture", (req, res) => {
   const s3 = new aws.S3({ apiVersion: "2006-03-1" });
   const params = {
     Bucket: "ramyakandasamy",
-    Key: req.body.id + "/gym.jpg"
+    Key: req.params.id + "/gym.jpg"
   };
   const url = s3.getSignedUrl("getObject", params, function(err, data) {
-  	if (err) {
-		res.send(err);
-	} else {
-		res.status(200);
-		res.json(data);
-	}
+    if (err) {
+      res.send(err);
+    } else {
+      res.status(200);
+      res.json(data);
+    }
   });
 });
 
-//delete a gym picture
+//delete a gym
 gymRouter.post("/deleteFolder", (req, res) => {
-	let key = req.body.key;
-	aws.config.update({
-    		region: "us-west",
-    		endpoint: "https://s3.amazonaws.com"
-  	});
-	const s3 = new aws.S3({apiVersion: "2006-03-1"});
-	var params = { 
-			Bucket: "ramyakandasamy",
-			Key: key
-	};
-	s3.deleteObject(params, function(err, data) {
-		if (err) {
-			res.send(err);
-		} else {
-			res.status(200);
-			res.json(data);
-		}
-	});
+  let key = req.body.key;
+  console.log("key is" + req.body.key);
+  aws.config.update({
+    region: "us-west",
+    endpoint: "https://s3.amazonaws.com"
+  });
+  const s3 = new aws.S3({ apiVersion: "2006-03-1" });
+  var params = {
+    Bucket: "ramyakandasamy",
+    Key: key
+  };
+  s3.deleteObject(params, function(err, data) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.status(200);
+      res.json(data);
+    }
+  });
 });
 
 //get all gyms from owner
