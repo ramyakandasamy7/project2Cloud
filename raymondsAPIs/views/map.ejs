@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
-    <!-- Font Awesome Icon Library -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   
   
@@ -57,14 +57,14 @@ body {font-family: Verdana, sans-serif; margin:0; overflow:hidden}
 .mySlides {display: none}
 img {vertical-align: middle;}
 
-/* Slideshow container */
+
 .slideshow-container {
   max-width: 1000px;
   position: relative;
   margin: auto;
 }
 
-/* Next & previous buttons */
+
 .prev, .next {
   cursor: pointer;
   position: absolute;
@@ -72,7 +72,7 @@ img {vertical-align: middle;}
   width: auto;
   padding: 16px;
   margin-top: -22px;
-  color:yellow;
+  color:blue;
   background-color:rgba(0,0,0,0.4);
   font-weight: bold;
   font-size: 18px;
@@ -81,18 +81,17 @@ img {vertical-align: middle;}
   user-select: none;
 }
 
-/* Position the "next button" to the right */
+
 .next {
   right: 0;
   border-radius: 3px 0 0 3px;
 }
 
-/* On hover, add a black background color with a little bit see-through */
+
 .prev:hover, .next:hover {
   background-color: rgba(0,0,0,0.8);
 }
 
-/* Caption text */
 .text {
   color: #f2f2f2;
   font-size: 15px;
@@ -103,7 +102,7 @@ img {vertical-align: middle;}
   text-align: center;
 }
 
-/* Number text (1/3 etc) */
+
 .numbertext {
   color: #f2f2f2;
   font-size: 12px;
@@ -112,7 +111,7 @@ img {vertical-align: middle;}
   top: 0;
 }
 
-/* The dots/bullets/indicators */
+
 .dot {
   cursor: pointer;
   height: 15px;
@@ -128,7 +127,6 @@ img {vertical-align: middle;}
   background-color: #717171;
 }
 
-/* Fading animation */
 .fade {
   -webkit-animation-name: fade;
   -webkit-animation-duration: 1.5s;
@@ -146,7 +144,6 @@ img {vertical-align: middle;}
   to {opacity: 1}
 }
 
-/* On smaller screens, decrease text size */
 @media only screen and (max-width: 300px) {
   .prev, .next,.text {font-size: 11px}
 }
@@ -175,11 +172,15 @@ img {vertical-align: middle;}
         bottom:0px;
         right:0px;
       }
+      .close-slider {
+        cursor: pointer;
+      }
     </style>
+    <title>GarageGym</title>
   </head>
   <body>
 
-    <div style="margin:auto;background-color:yellow;text-align:center;height:40px;font-size:30px;">Gyms Near <span style="font-style:bold" id="location"><%= location %></span></div>
+    <div style="margin:auto;background-color:blue;text-align:center;height:40px;font-size:30px;">Gyms Near <span style="font-style:bold" id="location"><%= location %></span></div>
     <span id="gym_info" data-stuff=<%=gyminfo%></span>
     <div id="slider" class="slide-in">
     </div>
@@ -209,6 +210,16 @@ img {vertical-align: middle;}
           callback({result:results, id:id })
         })  
     }
+    $(document).on('click', '.close-slider', function() {
+      for(var x = 0; x < gymmarker.length; x++) {
+        gymmarker[x].setAnimation(null);
+      }
+        var $slider = document.getElementById('slider');
+                  var isOpen = $slider.classList.contains('slide-in');
+
+                  $slider.setAttribute('class', isOpen ? 'slide-out' : 'slide-in');
+                  $("#myMap").css('pointer-events', "auto");
+      })
     function myMap() {
         var array = [];
         geocoder = new google.maps.Geocoder();
@@ -218,20 +229,33 @@ img {vertical-align: middle;}
             map = new google.maps.Map(document.getElementById('myMap'), {
               center: center, zoom: 10
             })
+            var temp = null;
             for(var j = 0; j < gym_info.length; j++) {
               geocode(geocoder, gym_info[j].locationofGym, gym_info[j].gymID, function(results) {
-              gymmarker[j] = new google.maps.Marker({
+              temp = new google.maps.Marker({ 
               position: results.result[0].geometry.location, id:results.id, map: map, title: 'Gym#' + j, animation: google.maps.Animation.DROP,
-              icon: 'http://gg.mymsseprojects.com/imgs/favicon.ico'
-              });
-              gymmarker[j].addListener('click', function() {
+              icon: {url:'http://gg.mymsseprojects.com/imgs/favicon.ico', size: new google.maps.Size(50, 50), scaledSize: new google.maps.Size(50,50)}
+              })
+              gymmarker.push(temp);
+              temp.addListener('click', function() {
                 $.get('/gyminfo/'+this.id, function(data) {
                   $("#slider").html(data);
                   var $slider = document.getElementById('slider');
                   var isOpen = $slider.classList.contains('slide-in');
 
-$slider.setAttribute('class', isOpen ? 'slide-out' : 'slide-in');
+                  $slider.setAttribute('class', isOpen ? 'slide-out' : 'slide-in');
+                  if(isOpen) {
+                    $("#myMap").css('pointer-events', "none");
+                  }
+                  else {
+                    $("#myMap").css('pointer-events', "true ");
+                  }
                 });
+                for(var x = 0; x < gymmarker.length; x++) {
+                  if(gymmarker[x]) {
+                    gymmarker[x].setAnimation(null);
+                  }
+                }
                 if(this.getAnimation() !== null) {
                   this.setAnimation(null);
                 }else {
