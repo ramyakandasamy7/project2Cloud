@@ -21,7 +21,7 @@ function getAccountInfo() {
 			console.log(data.Item);
 			window.accountInfo = data.Item
 			renderAccountInfo();
-			renderListOfGyms();
+			getListOfGyms();
 		} else {
 			alert("Failed to get account information.");
 			window.location("http://gg.mymsseprojects.com");
@@ -67,15 +67,15 @@ function renderModals() {
 									+"<span class='input-group-text' id='picture'>Gym Picture</span>"
 								+"</div>"
 								+"<div class='custom-file'>"
-									+"<input type='file' class='custom-file-input' id='inputGroupFile01'"
-										+"aria-describedby='inputGroupFileAddon01'>"
-									+"<label class='custom-file-label' for='inputGroupFile01'>Choose file</label>"
+									+"<input type='file' class='custom-file-input' id='gympic' "
+										+"aria-describedby='gympic'>"
+									+"<label class='custom-file-label' for='gympic'>Choose file</label>"
 								+"</div>"
 							+"</div>"
 							+"<h5>Equipments</h5>"
 							+"<div class='form-check'>"
 								+"<label class='form-check-label'>"
-									+"<input type='checkbox' class='form-check-input' value='bike'>Indoor Cycle Bike"
+									+"<input type='checkbox' class='form-check-input' value='indoor_cycle_bike'>Indoor Cycle Bike"
 								+"</label>"
 							+"</div>"
 							+"<div class='form-check'>"
@@ -100,7 +100,7 @@ function renderModals() {
 							+"</div>"
 							+"<div class='form-check'>"
 								+"<label class='form-check-label'>"
-									+"<input type='checkbox' class='form-check-input' value='benchpress'>Bench Press"
+									+"<input type='checkbox' class='form-check-input' value='bench_press'>Bench Press"
 								+"</label>"
 							+"</div>"
 							+"<div class='form-check'>"
@@ -123,6 +123,14 @@ function renderModals() {
 			+"</div>"
 		+"</div>"
 	);
+	updateFileInput();
+}
+
+function updateFileInput() {
+	$('#gympic').on('change',function(){
+                var fileName = $(this).val();
+                $(this).next('.custom-file-label').html(fileName);
+        });
 }
 
 function addNewGym() {
@@ -142,10 +150,32 @@ function addNewGym() {
 		data: { ownerID: oid, cost: cost, location: address, attributes: JSON.stringify(attrs)},
 		dataType: "json"
 	}).done(function(data, message, stat) {
-		console.log(data);
-		console.log(stat);
+		if (stat.status === 200) {
+			console.log(data);
+			uploadPicture(data.gymID);
+		}
 	});
 	
+}
+
+function uploadPicture(gymID) {
+	let pic     = document.getElementById("gympic").files;
+	var fd    = new FormData();
+	fd.append('file', pic[0]);
+	fd.append('gymID', gymID);
+
+	$.ajax({
+		url: API_URL+"gymPictureUpload",
+		type: "POST",
+		data: fd,
+		processData: false,
+		contentType: false
+	}).done(function(data, message, stat) {
+		if (stat.status === 200) {
+			console.log(data);
+			location.reload();
+		}
+	});
 }
 
 function renderMainContainers() {
@@ -165,6 +195,7 @@ function renderMainContainers() {
 			+"</div>"
 			+"<div class='row'>"
 				+"<div class='col' id='gyms_container'>"
+					+"<h5>My Gyms</h5>"
 					+"<button type='button' class='btn btn-primary btn-sm'"
 						+" data-toggle='modal' data-target='#add_gym' "
 						+" style='margin-top: 10px; margin-bottom: 10px;' onclick='enterLocation();'>"
@@ -177,7 +208,6 @@ function renderMainContainers() {
 								+"<th>Price</th>"
 								+"<th>Address</th>"
 								+"<th>Equipments</th>"
-								+"<th>Phone No.</th>"
 								+"<th>Rating</th>"
 								+"<th>Options</th>"
 							+"</tr>"
@@ -187,8 +217,10 @@ function renderMainContainers() {
 					+"</table>"
 				+"</div>"
 			+"</div>"
+			+"<hr/>"
 			+"<div class='row'>"
 				+"<div class='col' id='requests_container'>"
+					+"<h5>My Gym Requests</h5>"
 					+"<table class='table table-striped table-sm'>"
 						+"<thead class='thead-dark'>"
 							+"<tr>"
@@ -211,25 +243,60 @@ function enterLocation() {
 	$('#address').val(window.accountInfo.location);
 }
 
-function renderListOfGyms() {
-	getGyms();
-	let gyms = window.allGyms;
-	//for ()
-}
-
-function getGyms() {
+function getListOfGyms() {
 	let oid = window.accountInfo.ownerID;
 
-	console.log(oid);
 	$.ajax({
 		url: API_URL+"gyms/"+oid,
 		type: "GET",
 		dataType: "json"
 	}).done(function(data, message, stat) {
-		console.log(data);
-		console.log(message);
-		console.log(stat);
+		if (stat.status === 200) {
+			window.allGyms = data.Items;
+			renderListOfGyms();
+		}
 	});
+}
+
+function renderListOfGyms() {
+	let gyms = window.allGyms;
+
+	for (i in gyms) {
+		let g = gyms[i];
+		$('#gyms_tbody').append(
+			"<tr>"
+				+"<td>$"+g.cost+"</td>"
+				+"<td>"+g.locationofGym+"</td>"
+				+"<td>"+g.attributes+"</td>"
+				+"<td>"+g.rating+"</td>"
+				+"<td>"
+					+"<div class='btn-group' role='group' aria-label='Options'>"
+						+"<button type='button' class='btn btn-primary btn-sm'>Edit</button>"
+						+"<button type='button' class='btn btn-danger btn-sm' onclick='deleteGym(\""+g.gymID+"\");'>Remove</button>"
+					+"</div>"
+				+"</td>"
+			+"</tr>"
+		);
+	}
+}
+
+function deleteGym(id) {
+	let confirmed = confirm("Are you sure you want to delete this gym?");
+
+	if (confirmed === true) {
+        	$.ajax({
+        	        url: API_URL+"deletegym",
+        	        type: "POST",
+        	        data: {gymID: id},
+        	        dataType: "json"
+        	}).done(function(data, statMsg, stat) {
+        	        if (stat.status === 200) {
+        	                location.reload();
+        	        } else {
+        	                alert("Error: "+data);
+        	        }
+        	});
+	}
 }
 
 function renderListOfRequests() {

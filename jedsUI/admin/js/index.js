@@ -2,6 +2,7 @@
 var allUsers;
 var allOwners;
 var allGyms;
+var allS3Folders;
 var API_URL = "http://3.95.182.111:3000/"
 
 function initUI() {
@@ -9,9 +10,11 @@ function initUI() {
 	getAllUsers();
 	getAllOwners();
 	getAllGyms();
+	getAllS3Folders();
 	renderUsersTable();
 	renderOwnersTable();
 	renderGymsTable();
+	renderS3FoldersTable();
 }
 
 function getAllUsers() {
@@ -47,6 +50,18 @@ function getAllGyms() {
 		console.log(data);
 		window.allGyms = data;
 		renderGymsTable();
+	});
+}
+
+function getAllS3Folders() {
+	$.ajax({
+		url: API_URL+"gymPictures",
+		type: "GET",
+		dataType: "json"
+	}).done(function(data) {
+		console.log(data.Contents);
+		window.allS3Folders = data.Contents;
+		renderS3FoldersTable();
 	});
 }
 
@@ -118,6 +133,23 @@ function renderGymsTable() {
 	}
 }
 
+function renderS3FoldersTable() {
+	$("#s3Tbody").empty();
+	for (i in window.allS3Folders) {
+		console.log(i);
+		let key    = window.allS3Folders[i].Key;
+		let size   = window.allS3Folders[i].Size;
+
+		$("#s3Tbody").append(
+			"<tr>"
+				+"<td>"+key+"</td>"
+				+"<td>"+size+"</td>"
+				+"<td><button type='button' class='btn btn-primary btn-sm' onclick='deleteFolder(\""+key+"\")'>Delete</button></td>"
+			+"</tr>"
+		);
+	}
+}
+
 function deleteUser(id) {
 	$.ajax({
 		url: API_URL+"deleteUser",
@@ -155,6 +187,21 @@ function deleteGym(id) {
 		url: API_URL+"deletegym",
 		type: "POST",
 		data: {gymID: id},
+		dataType: "json"
+	}).done(function(data, statMsg, stat) {
+		if (stat.status === 200) {
+			location.reload();
+		} else {
+			alert("Error: "+data);
+		}
+	});
+}
+
+function deleteFolder(key) {
+	$.ajax({
+		url: API_URL+"deleteFolder",
+		type: "POST",
+		data: { key: key },
 		dataType: "json"
 	}).done(function(data, statMsg, stat) {
 		if (stat.status === 200) {
@@ -223,6 +270,22 @@ function renderContainers() {
 							+"</tr>"
 						+"</thead>"
 						+"<tbody id='gymsTbody'>"
+						+"</tbody>"
+					+"</table>"
+				+"</div>"
+			+"</div>"
+			+"<div class='row'>"
+				+"<div class='col'>"
+					+"<h2>S3 Bucket</h2>"
+					+"<table class='table table-sm'>"
+						+"<thead>"
+							+"<tr>"
+								+"<th>Key</th>"
+								+"<th>Size</th>"
+								+"<th>Delete</th>"
+							+"</tr>"
+						+"</thead>"
+						+"<tbody id='s3Tbody'>"
 						+"</tbody>"
 					+"</table>"
 				+"</div>"
