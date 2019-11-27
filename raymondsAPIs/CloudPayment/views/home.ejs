@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+      <p>PRICE FOR THE GYM IS $<%=amount%></p>
+    <form action='/charge' method='post'>
+      <input type="hidden" name="chargeAmount" value=<%=amount*100%>>
+      <input type="hidden" name="ownerEmail" value="horaymond6@gmail.com">
+      <input type="hidden" name="userEmail" value="horaymond6@gmail.com">
+      <input type="hidden" name="gymLocation" value="San Jose, CA">
+      <input type="hidden" name="reserveDate" value="12/25/2019">
+        <script src="https://checkout.stripe.com/checkout.js"
+            class='stripe-button'
+            data-key='pk_test_xueP3RRIWPJGb3igzkJQcPX200yDf5fc4L'
+            data-amount=<%=amount*100 %>
+            data-name='Gym'
+            data-description="Rent Gym"
+            data-locale = "auto"
+            data-currency ="usd"></script>
+    </form>
+  </body>
+</html>
