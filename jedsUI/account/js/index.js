@@ -1,8 +1,11 @@
-var API_URL = "http://3.95.182.111:3000/"
+var pubip;
+var API_URL;
 var accountInfo;
 var allGyms = {};
 
-function initUI() {
+function initUI(pubip) {
+	window.pubip = pubip;
+	window.API_URL = "http://"+pubip+":3000";
 	getAccountInfo();
 	renderModals();
 	renderMainContainers();
@@ -13,7 +16,7 @@ function initUI() {
 function getAccountInfo() {
 	console.log(window.accountID);
 	$.ajax({
-		url: API_URL+"owners/"+window.accountID,
+		url: window.API_URL+"/owners/"+window.accountID,
 		type: "GET",
 		dataType: "json"
 	}).done(function(data, message, stat) {
@@ -43,6 +46,7 @@ function renderAccountInfo() {
 
 function renderModals() {
 	$('#root').append(
+		
 		"<div class='modal fade' id='add_gym' tabindex='-1' role='dialog'>"
 			+"<div class='modal-dialog' role='document'>"
 				+"<div class='modal-content'>"
@@ -145,7 +149,7 @@ function addNewGym() {
 	}
 
 	$.ajax({
-		url: API_URL+"creategym",
+		url: window.API_URL+"/creategym",
 		type: "POST",
 		data: { ownerID: oid, cost: cost, location: address, attributes: JSON.stringify(attrs)},
 		dataType: "json"
@@ -159,13 +163,13 @@ function addNewGym() {
 }
 
 function uploadPicture(gymID) {
-	let pic     = document.getElementById("gympic").files;
-	var fd    = new FormData();
+	let pic = document.getElementById("gympic").files;
+	var fd  = new FormData();
 	fd.append('file', pic[0]);
 	fd.append('gymID', gymID);
 
 	$.ajax({
-		url: API_URL+"gymPictureUpload",
+		url: window.API_URL+"/gymPictureUpload",
 		type: "POST",
 		data: fd,
 		processData: false,
@@ -181,9 +185,11 @@ function uploadPicture(gymID) {
 function renderMainContainers() {
 	//$('#root').empty();
 	$('#root').append(
-		"<nav class='navbar navbar-light bg-light'>"
-			+"<span class='navbar-brand mb-0 h1'>My Account</span>"
-		+"</nav>"
+		"<nav class='navbar navbar-light bg-dark' style='margin-bottom: 20px;'>"
+                        +"<a class='navbar-brand' href='http://gg.mymsseprojects.com'>"
+                                +"<img src='/imgs/favicon.ico'>"
+                        +"</a>"
+                +"</nav>"
 		+"<div class='container-fluid'>"
 			+"<div class='row'>"
 				+"<div class='col' id='gyms_container'>"
@@ -247,7 +253,7 @@ function getListOfGyms() {
 	let oid = window.accountInfo.ownerID;
 
 	$.ajax({
-		url: API_URL+"gyms/"+oid,
+		url: window.API_URL+"/gyms/"+oid,
 		type: "GET",
 		dataType: "json"
 	}).done(function(data, message, stat) {
@@ -285,7 +291,7 @@ function deleteGym(id) {
 
 	if (confirmed === true) {
         	$.ajax({
-        	        url: API_URL+"deletegym",
+        	        url: window.API_URL+"/deletegym",
         	        type: "POST",
         	        data: {gymID: id},
         	        dataType: "json"

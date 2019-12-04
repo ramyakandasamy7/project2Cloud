@@ -1,23 +1,74 @@
-
-var API_URL = "http://3.95.182.111:3000/";
+var pubip;
+var API_URL;
 var gymInfo;
 var cost = 0;
+var stripe = Stripe('pk_test_51aGVpf9lEQ8sSjiRtFPhSDz00qrPP3vCl');
+var elements = stripe.elements();
+var card;
 
-
-function initUI() {
+function initUI(pubip) {
+	window.pubip = pubip;
+	window.API_URL = "http://"+pubip+":3000";
 	getGymInfo();
+	//renderModals("#root");
 }
 
+//function renderModals(id) {
+//	$(id).append(
+//		"<div class='modal fade' id='payment' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>"
+//			+"<div class='modal-dialog' role='document'>"
+//				+"<div class='modal-content'>"
+//					+"<div class='modal-header'>"
+//						+"<h5 class='modal-title'>Payment</h5>"
+//						+"<button type='button' class='close' data-dismiss='modal' aria-label='Close'>"
+//							+"<span aria-hidden='true'>&times;</span>"
+//						+"</button>"
+//					+"</div>"
+//					+"<div class='modal-body'>"
+//						+"<div id='card-element'></div>"
+//		                		+"<div id='card-errors' role='alert'></div>"
+//					+"</div>"
+//					+"<div class='modal-footer'>"
+//						+"<button type='button' class='btn btn-primary' onclick='submitPayment();'>Submit Payment</button>"
+//					+"</div>"
+//				+"</div>"
+//			+"</div>"
+//		+"</div>"
+//	);
+//}
+
+function submitPayment() {
+	let gi   = window.gymInfo;
+	let cost = gi.cost;
+	let loc  = gi.locationofGym;
+	let oid  = gi.gymOwner;
+	let gem  = localStorage.getItem('username');
+	let dobj = $('#datepicker').datepicker('getDate');
+
+	let date = dobj.getFullYear() + "-" + (((dobj.getMonth() + 1) < 9) ? '0'+(dobj.getMonth()+1) : (dobj.getMonth()+1)) + "-" + ((dobj.getDate() < 9) ? '0'+dobj.getDate() : dobj.getDate());
+
+	prepareChargeInfo(cost, oid, gem, loc, date);
+}
+
+function prepareChargeInfo(cost, oid, gem, loc, date) {
+	$.get(window.API_URL+"/owners/"+oid, function(data, status) {
+		let oem = data.Item.username;
+		processPayment(cost, oem, gem, loc, date);
+	});
+}
+
+function processPayment(cost, oem, gem, loc, date) {
+	$.redirect('http://'+pubip+':5000/', {'chargeAmount':cost, 'ownerEmail':oem, 'userEmail':gem, 'gymLocation':loc, 'reserveDate':date.toString()});
+}
 function getGymInfo() {
 	let id = window.gymID;
 
 	$.ajax({
-		url: API_URL+"gym/"+id,
+		url: window.API_URL+"/gym/"+id,
 		type: "GET",
 		dataType: "json"
 	}).done(function(data, message, stat) {
 		if (stat.status === 200) {
-			console.log(data);
 			window.gymInfo = data.Items[0];
 			renderUI();
 			getGymImageUrl();
@@ -28,14 +79,14 @@ function getGymInfo() {
 function getGymImageUrl() {
 	let id = window.gymID;
 	$.ajax({
-		url: API_URL+"gymPicture?id="+id,
+		url: window.API_URL+"/gymPicture/"+id,
 		type: "GET",
 		dataType: "json"
 	}).done(function(data, message, stat) {
 		if (stat.status === 200) {
 			console.log(data);
 			$('#gym_image').append(
-				"<img src='"+data+"' alt='gym.jpg' height='100' width='auto'>"
+				"<img src='"+data+"' alt='gym.jpg' style='width: 100%'>"
 			);
 		}
 	});
@@ -45,7 +96,6 @@ function renderUI() {
 	let g = window.gymInfo;
 	window.cost = parseInt(g.cost);
 	let e = JSON.parse(g.attributes);
-	console.log(e);
 
 	$("#root").append(
 		"<nav class='navbar navbar-light bg-dark' style='margin-bottom: 20px;'>" 
@@ -81,11 +131,11 @@ function renderUI() {
 				+"</div>"
 			+"</div>"
 			+"<div class='row'>"
-				+"<div class='col' id='gym_image'>"
+				+"<div class='col' id='gym_image' style='margin-bottom: 20px;'>"
 				+"</div>"
 			+"</div>"
 			+"<div class='row'>"
-				+"<div class='col'>"
+				+"<div class='col text-center'>"
 					+"<div id='rating' class='starrr'></div>"
 				+"</div>"
 			+"</div>"
@@ -126,7 +176,7 @@ function renderUI() {
 					+"<div class='container'>"
 						//+"<p class='lead'>Cost: <strong><span id='current_cost'>0</span></strong></p>"
 					+"</div>"
-					+"<button type='button' class='btn btn-primary btn-sm' style='margin-top: 10px;'>Pay and Reserve</button>"
+					+"<button type='button' id='submit' class='btn btn-primary btn-sm' style='margin-top: 10px; margin-bottom: 40px;' onclick='submitPayment();'>Pay and Reserve</button>"
 				+"</div>"
 			+"</div>"
 		+"</div>"

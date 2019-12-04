@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 
 app.route("/")
-    .get(routes.showhome); 
+    .post(routes.showhome);  
 
 /*app.route("/paysuccess")
     .get(routes.showsuccess);*/
@@ -18,4 +18,4 @@ app.route("/")
 app.route("/charge")
     .post(routes.charge);
 
-app.listen(80);
+app.listen(5000);

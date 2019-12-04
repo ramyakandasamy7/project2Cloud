@@ -16,17 +16,13 @@ var smtpTransport = nodemailer.createTransport({
   var docClient = new aws.DynamoDB.DocumentClient();
 
 exports.showhome = function(req, res) {
-    /*var amount = req.body.amount;
-    var owner_email = req.body.owner_email;
-    var user_email = req.body.user_email;
-    var location = req.body.location;
-    var reserve_date = req.body.reserve_date*/
-    var amount = 100;
-    var owner_email = "horaymond6@gmail.com";
-    var user_email = "horaymond6@gmail.com";
-    var location = "San Jose, CA"
-    var reserve_date = "01/01/2020";
-    res.render('home', {amount: amount, owner_email: owner_email, user_email: user_email, location: location, reserve_date, reserve_date});
+    console.log(req.body);
+    var amount = req.body.chargeAmount;
+    var ownerEmail = req.body.ownerEmail;
+    var userEmail = req.body.userEmail;
+    var gymLocation = req.body.gymLocation;
+    var reserveDate = req.body.reserveDate;
+    res.render('home', {amount: amount, ownerEmail: ownerEmail, userEmail: userEmail, gymLocation: gymLocation, reserveDate: reserveDate });
 }
 
 exports.charge = function(req, res) {
@@ -62,8 +58,8 @@ exports.charge = function(req, res) {
             Item: {
               requestID: ID,
               dateRequest: req.body.reserve_date,
-              userID: req.body.user_id,
-              gymID: req.body.gym_id,
+              userID: req.body.userId,
+              gymID: req.body.gymId,
               status: "Pending"
             }
           };
