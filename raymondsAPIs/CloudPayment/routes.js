@@ -10,8 +10,13 @@ var smtpTransport = nodemailer.createTransport({
   });
 
 exports.showhome = function(req, res) {
-    var gymprice = 200;
-    res.render('home', {amount: 200});
+    console.log(req.body);
+    var amount = req.body.chargeAmount;
+    var ownerEmail = req.body.ownerEmail;
+    var userEmail = req.body.userEmail;
+    var gymLocation = req.body.gymLocation;
+    var reserveDate = req.body.reserveDate;
+    res.render('home', {amount: amount, ownerEmail: ownerEmail, userEmail: userEmail, gymLocation: gymLocation, reserveDate: reserveDate });
 }
 
 exports.charge = function(req, res) {

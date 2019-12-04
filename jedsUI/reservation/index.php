@@ -25,6 +25,7 @@ $out = exec($cmd, $output, $ec);
   		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+		<script src="js/jquery.redirect.js"></script>
 		<script src="https://js.stripe.com/v3/"></script>
 
 		<script src="https://kit.fontawesome.com/a215ff507f.js" crossorigin="anonymous"></script>
