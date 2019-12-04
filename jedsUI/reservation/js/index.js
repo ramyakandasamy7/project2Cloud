@@ -42,23 +42,33 @@ function submitPayment() {
 	let cost = gi.cost;
 	let loc  = gi.locationofGym;
 	let oid  = gi.gymOwner;
+	let gid  = gi.gymID;
 	let gem  = localStorage.getItem('username');
+	let uid  = localStorage.getItem('userID');
 	let dobj = $('#datepicker').datepicker('getDate');
 
 	let date = dobj.getFullYear() + "-" + (((dobj.getMonth() + 1) < 9) ? '0'+(dobj.getMonth()+1) : (dobj.getMonth()+1)) + "-" + ((dobj.getDate() < 9) ? '0'+dobj.getDate() : dobj.getDate());
 
-	prepareChargeInfo(cost, oid, gem, loc, date);
+	prepareChargeInfo(cost, oid, gem, loc, date, gid, uid);
 }
 
-function prepareChargeInfo(cost, oid, gem, loc, date) {
+function prepareChargeInfo(cost, oid, gem, loc, date, gid, uid) {
 	$.get(window.API_URL+"/owners/"+oid, function(data, status) {
 		let oem = data.Item.username;
-		processPayment(cost, oem, gem, loc, date);
+		processPayment(cost, oem, gem, loc, date, oid, gid, uid);
 	});
 }
 
-function processPayment(cost, oem, gem, loc, date) {
-	$.redirect('http://'+pubip+':5000/', {'chargeAmount':cost, 'ownerEmail':oem, 'userEmail':gem, 'gymLocation':loc, 'reserveDate':date.toString()});
+function processPayment(cost, oem, gem, loc, date, oid, gid, uid) {
+	console.log(cost);
+	console.log(oem);
+	console.log(gem);
+	console.log(loc);
+	console.log(date);
+	console.log(oid);
+	console.log(gid);
+	console.log(uid);
+	$.redirect('http://'+pubip+':5000/', {'chargeAmount':cost, 'ownerEmail':oem, 'userEmail':gem, 'gymLocation':loc, 'reserveDate':date.toString(), 'userID':uid, 'gymID':gid});
 }
 function getGymInfo() {
 	let id = window.gymID;

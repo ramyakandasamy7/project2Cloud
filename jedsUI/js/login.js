@@ -23,6 +23,7 @@ function checkIfLoggedIn() {
 		window.username = userInfo.username;
 		window.accountType = userInfo.acctType;
 		localStorage.setItem('username', window.username);
+		localStorage.setItem('userID', window.userID);
 		/* Thinking about pulling user data when cookie exists
 		 *but may be necessary...?
 		 * */
