@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 
 app.route("/")
-    .get(routes.showhome);  
+    .get(routes.showhome); 
 
 /*app.route("/paysuccess")
     .get(routes.showsuccess);*/

@@ -3,13 +3,18 @@
   <head>
   </head>
   <body>
-      <p>PRICE FOR THE GYM IS $<%=amount%></p>
+    <div style="border:cadetblue 3px solid; width:350px;padding:0px 40px 40px 40px;">
+      <h1>Your Reservation</h1>
+      <h4>Gym Location Reserved: <%=location%></p>
+      <p>Date Reserved: <%=reserve_date%></p>
+      <hr>
+      <h3 style="color:red">Total <span style="float:right; padding-right:40px;">$<%=amount%></span></h3>
     <form action='/charge' method='post'>
       <input type="hidden" name="chargeAmount" value=<%=amount*100%>>
-      <input type="hidden" name="ownerEmail" value="horaymond6@gmail.com">
-      <input type="hidden" name="userEmail" value="horaymond6@gmail.com">
-      <input type="hidden" name="gymLocation" value="San Jose, CA">
-      <input type="hidden" name="reserveDate" value="12/25/2019">
+      <input type="hidden" name="ownerEmail" value=<%=owner_email %>>
+      <input type="hidden" name="userEmail" value=<%=user_email %>>
+      <input type="hidden" name="gymLocation" value=<%=location %>>
+      <input type="hidden" name="reserveDate" value=<%=reserve_date %>>
         <script src="https://checkout.stripe.com/checkout.js"
             class='stripe-button'
             data-key='pk_test_xueP3RRIWPJGb3igzkJQcPX200yDf5fc4L'
@@ -19,5 +24,9 @@
             data-locale = "auto"
             data-currency ="usd"></script>
     </form>
+    <form action="/reserve" method='post'>
+      <input type="submit" value="hello">
+    </form>
+    </div>
   </body>
 </html>
