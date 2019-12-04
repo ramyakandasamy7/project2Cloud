@@ -1,10 +1,13 @@
 
-var API_URL = "http://3.95.182.111:3000";
+var pubip;
+var API_URL;
 var userID;
 var username;
 var accountType;
 
-function initUI() {
+function initUI(pubip) {
+	window.pubip = pubip;
+	window.API_URL = "http://"+pubip+":3000";
 	renderMainContainer('#root');
 	renderModals('#root');
 	//renderLoginButton('#main_container');
@@ -50,7 +53,7 @@ function login() {
 
 	if (goer === true) {
 		$.ajax({
-			url: API_URL+"/loginUser",
+			url: window.API_URL+"/loginUser",
 			type: "POST",
 			data: {username: email, password: pswd},
 			dataType: "json"
@@ -63,7 +66,7 @@ function login() {
 		});
 	} else {
 		$.ajax({
-			url: API_URL+"/loginOwner",
+			url: window.API_URL+"/loginOwner",
 			type: "POST",
 			data: {username: email, password: pswd},
 			dataType: "json"
@@ -83,7 +86,6 @@ function showUserSettings(id, user) {
 	$('#account_button_container').append(
 		"<button type='button' class='btn btn-sm' onclick='showAccountPage(\""+id+"\");'><i class='fas fa-user-cog fa-2x'></i></button>"
 		+"<button type='button' class='btn btn-sm' onclick='logout();'><i class='fas fa-sign-out-alt fa-2x'></i></button>"
-
 	);
 }
 
@@ -116,7 +118,7 @@ function processRegistration() {
 
 	if (gymgoer) {
 		$.ajax({
-			url: 'http://3.95.182.111:3000/createnewUser',
+			url: window.API_URL+'/createnewUser',
 			type: 'POST',
 			data: {'register_email':email, 'register_password':password, 'register_location':address}
 		}).done(function(data, message, stat){
@@ -127,7 +129,7 @@ function processRegistration() {
 		});
 	} else {
 		$.ajax({
-			url: 'http://3.95.182.111:3000/createnewOwner',
+			url: window.API_URL+'/createnewOwner',
 			type: 'POST',
 			data: {'register_email':email, 'register_password':password, 'register_location':address}
 		}).done(function(data, message, stat){
@@ -153,7 +155,7 @@ function renderAppTitle(id) {
 					+"</div>"
 					+"<div class='col-lg-8 col-md-12'>"
 						
-						+"<form action='http://3.95.182.111:4000/findgym' method='POST'>"
+						+"<form action='http://"+window.pubip+":4000/findgym' method='POST'>"
 							+"<div class='input-group mb-4'>"
 								+"<input type='text' class='form-control search_input' id='search_input' name='location' placeholder='Find a garage gym! Enter your location now!' aria-describedby='search_button'>"
 								+"<div class='input-group-append'>"
@@ -172,7 +174,7 @@ function renderAppTitle(id) {
 				+"autocomplete = new google.maps.places.Autocomplete(input);"
 		 	+"}"
 		+"</script>"
-  		+"<script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBdd-O6jMPlIBrnBsv1n9WF_Y3l5zCYVGA&libraries=places&callback=fillin'></script>"  
+  		+"<script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?key=AIzaSyC4WaWG5bt4LypUmBt6Ap2fPLAjduAsCHo&libraries=places&callback=fillin'></script>"  
 
 	);
 }

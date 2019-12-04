@@ -3,9 +3,12 @@ var allUsers;
 var allOwners;
 var allGyms;
 var allS3Folders;
-var API_URL = "http://3.95.182.111:3000/"
+var pubip;
+var API_URL;
 
-function initUI() {
+function initUI(pubip) {
+	window.pubip = pubip;
+	window.API_URL = "http://"+pubip+":3000";
 	renderContainers();
 	getAllUsers();
 	getAllOwners();
@@ -19,7 +22,7 @@ function initUI() {
 
 function getAllUsers() {
 	$.ajax({
-		url: API_URL+"users",
+		url: window.API_URL+"/users",
 		type: "GET",
 		dataType: "json"
 	}).done(function(data) {
@@ -31,7 +34,7 @@ function getAllUsers() {
 
 function getAllOwners() {
 	$.ajax({
-		url: API_URL+"owners",
+		url: window.API_URL+"/owners",
 		type: "GET",
 		dataType: "json"
 	}).done(function(data) {
@@ -43,7 +46,7 @@ function getAllOwners() {
 
 function getAllGyms() {
 	$.ajax({
-		url: API_URL+"gyms",
+		url: window.API_URL+"/gyms",
 		type: "GET",
 		dataType: "json"
 	}).done(function(data) {
@@ -55,7 +58,7 @@ function getAllGyms() {
 
 function getAllS3Folders() {
 	$.ajax({
-		url: API_URL+"gymPictures",
+		url: window.API_URL+"/gymPictures",
 		type: "GET",
 		dataType: "json"
 	}).done(function(data) {
@@ -152,7 +155,7 @@ function renderS3FoldersTable() {
 
 function deleteUser(id) {
 	$.ajax({
-		url: API_URL+"deleteUser",
+		url: window.API_URL+"/deleteUser",
 		type: "POST",
 		data: {userID: id},
 		dataType: "json"
@@ -168,7 +171,7 @@ function deleteUser(id) {
 
 function deleteOwner(id) {
 	$.ajax({
-		url: API_URL+"deleteOwner",
+		url: window.API_URL+"/deleteOwner",
 		type: "POST",
 		data: {ownerID: id},
 		dataType: "json"
@@ -184,7 +187,7 @@ function deleteOwner(id) {
 
 function deleteGym(id) {
 	$.ajax({
-		url: API_URL+"deletegym",
+		url: window.API_URL+"/deletegym",
 		type: "POST",
 		data: {gymID: id},
 		dataType: "json"
@@ -199,7 +202,7 @@ function deleteGym(id) {
 
 function deleteFolder(key) {
 	$.ajax({
-		url: API_URL+"deleteFolder",
+		url: window.API_URL+"/deleteFolder",
 		type: "POST",
 		data: { key: key },
 		dataType: "json"

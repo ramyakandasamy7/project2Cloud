@@ -5,6 +5,8 @@ if (isset($_GET)) {
 } else {
 	$id = NULL;
 }
+$cmd = "curl ifconfig.me";
+$out = exec($cmd, $output, $ec);
 ?>
 
 <html>
@@ -18,9 +20,10 @@ if (isset($_GET)) {
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
 		<script src="https://kit.fontawesome.com/a215ff507f.js" crossorigin="anonymous"></script>
 		<script type='text/javascript'>
-		let id = "<?php echo $id;?>";
+		var id = "<?php echo $id;?>";
+		var pubip = "<?php echo $out;?>"; 
 		$.ajax({
-			url: "http://3.95.182.111:3000/verifyUser?id="+id,
+			url: "http://"+pubip+":3000/verifyUser?id="+id,
 			type: "GET",
 			dataType: "json"
 		}).done(function(data, message, stat) {

@@ -7,7 +7,8 @@ if (isset($_GET)) {
 } else {
 	header("Location: http://gg.mymsseprojects.com");
 }
-
+$cmd = "curl ifconfig.me";
+$out = exec($cmd, $output, $ec);
 ?>
 
 <html>
@@ -24,7 +25,7 @@ if (isset($_GET)) {
 		<script type='text/javascript'>
 			var accountID = "<?php echo $id; ?>";
 			$(document).ready(function() {
-				initUI();
+				initUI('<?php echo "$out";?>');
 			});
 		</script>
 	</head>

@@ -1,6 +1,8 @@
 <?php
 session_start();
 header("Access-Control-Allow-Origin: *");
+$cmd = "curl ifconfig.me";
+$out = exec($cmd, $output, $ec);
 ?>
 
 <html>
@@ -20,7 +22,7 @@ header("Access-Control-Allow-Origin: *");
 		<script type='text/javascript' src='js/configs.js?t<?php echo time();?>'></script>
 		<script type='text/javascript'>
 			$(document).ready(function() {
-				initUI();
+				initUI('<?php echo "$out";?>');
 			});
 		</script>
 	</head>

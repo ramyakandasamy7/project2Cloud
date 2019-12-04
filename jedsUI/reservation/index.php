@@ -7,7 +7,8 @@ if (isset($_GET)) {
 } else {
 	$id = 0;
 }
-
+$cmd = "curl ifconfig.me";
+$out = exec($cmd, $output, $ec);
 ?>
 
 <html>
@@ -24,13 +25,15 @@ if (isset($_GET)) {
   		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+		<script src="https://js.stripe.com/v3/"></script>
+
 		<script src="https://kit.fontawesome.com/a215ff507f.js" crossorigin="anonymous"></script>
 		<script type='text/javascript' src='js/starrr.js'></script>
 		<script type='text/javascript' src='js/index.js?t=<?php echo time();?>'></script>
 		<script type='text/javascript'>
 			var gymID = "<?php echo $id; ?>";
 			$(document).ready(function() {
-				initUI();
+				initUI('<?php echo "$out";?>');
 			});
 		</script>
 	</head>
