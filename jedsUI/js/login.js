@@ -17,7 +17,7 @@ function initUI(pubip) {
 }
 
 function checkIfLoggedIn() {
-	let userInfo = checkCookie()
+	let userInfo = checkCookie();
 	if (userInfo !== false) {
 		window.userID = userInfo.userID;
 		window.username = userInfo.username;
@@ -93,6 +93,8 @@ function showUserSettings(id, user) {
 
 function logout() {
 	deleteCookie();
+	localStorage.removeItem('username');
+	localStorage.removeItem('userID');
 	window.location.replace("http://gg.mymsseprojects.com");
 }
 

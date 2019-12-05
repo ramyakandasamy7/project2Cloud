@@ -13,6 +13,22 @@ function initUI(pubip) {
 	//renderModals("#root");
 }
 
+function checkIfLoggedIn() {
+	let userInfo = checkCookie();
+	if (userInfo !== false) {
+                window.userID = userInfo.userID;
+                window.username = userInfo.username;
+                window.accountType = userInfo.acctType;
+                localStorage.setItem('username', window.username);
+                localStorage.setItem('userID', window.userID);
+		return true;
+        } else {
+		alert("Please login or create an account first before making a reservation.");
+		window.location.replace('http://gg.mymsseprojects.com');
+		return false;
+        }
+}
+
 //function renderModals(id) {
 //	$(id).append(
 //		"<div class='modal fade' id='payment' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>"
@@ -38,18 +54,21 @@ function initUI(pubip) {
 //}
 
 function submitPayment() {
-	let gi   = window.gymInfo;
-	let cost = gi.cost;
-	let loc  = gi.locationofGym;
-	let oid  = gi.gymOwner;
-	let gid  = gi.gymID;
-	let gem  = localStorage.getItem('username');
-	let uid  = localStorage.getItem('userID');
-	let dobj = $('#datepicker').datepicker('getDate');
+	let loggedIn = checkIfLoggedIn();
+	if (loggedIn === true) {
+		let gi   = window.gymInfo;
+		let cost = gi.cost;
+		let loc  = gi.locationofGym;
+		let oid  = gi.gymOwner;
+		let gid  = gi.gymID;
+		let gem  = localStorage.getItem('username');
+		let uid  = localStorage.getItem('userID');
+		let dobj = $('#datepicker').datepicker('getDate');
 
-	let date = dobj.getFullYear() + "-" + (((dobj.getMonth() + 1) < 9) ? '0'+(dobj.getMonth()+1) : (dobj.getMonth()+1)) + "-" + ((dobj.getDate() < 9) ? '0'+dobj.getDate() : dobj.getDate());
+		let date = dobj.getFullYear() + "-" + (((dobj.getMonth() + 1) < 9) ? '0'+(dobj.getMonth()+1) : (dobj.getMonth()+1)) + "-" + ((dobj.getDate() < 9) ? '0'+dobj.getDate() : dobj.getDate());
 
-	prepareChargeInfo(cost, oid, gem, loc, date, gid, uid);
+		prepareChargeInfo(cost, oid, gem, loc, date, gid, uid);
+	}
 }
 
 function prepareChargeInfo(cost, oid, gem, loc, date, gid, uid) {
