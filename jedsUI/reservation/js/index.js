@@ -87,7 +87,7 @@ function processPayment(cost, oem, gem, loc, date, oid, gid, uid) {
 	console.log(oid);
 	console.log(gid);
 	console.log(uid);
-	$.redirect('http://'+pubip+':5000/', {'chargeAmount':cost, 'ownerEmail':oem, 'userEmail':gem, 'gymLocation':loc, 'reserveDate':date.toString(), 'userID':uid, 'gymID':gid});
+	$.redirect('http://'+pubip+':5000/', {'chargeAmount':cost, 'ownerId': oid, 'ownerEmail':oem, 'userEmail':gem, 'gymLocation':loc, 'reserveDate':date.toString(), 'userID':uid, 'gymID':gid});
 }
 function getGymInfo() {
 	let id = window.gymID;

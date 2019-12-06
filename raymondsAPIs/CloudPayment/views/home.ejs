@@ -3,26 +3,29 @@
   <head>
   </head>
   <body>
-    <div style="border:cadetblue 3px solid; width:350px;padding:0px 40px 40px 40px;">
-      <h1>Your Reservation</h1>
+    <div style="margin:auto;font-family: Tahoma;border:cadetblue 3px solid; width:350px;padding:0px 40px 40px 40px;">
+      <h1 style="text-align:center">Your Reservation</h1>
       <h4>Gym Location Reserved: <%=gymLocation%></p>
       <p>Date Reserved: <%=reserveDate%></p>
       <hr>
-      <h3 style="color:red">Total <span style="float:right; padding-right:40px;">$<%=amount%></span></h3>
+      <h3>Total <span style="font-size:20px;float:right; padding-right:40px;">$<%=amount%></span></h3>
     <form action='/charge' method='post'>
+      <input type="hidden" name="ownerId" value=<%=ownerId%>>
       <input type="hidden" name="chargeAmount" value=<%=amount*100%>>
       <input type="hidden" name="ownerEmail" value=<%=ownerEmail%>>
       <input type="hidden" name="userEmail" value=<%=userEmail %>>
       <input type="hidden" name="gymLocation" value=<%=gymLocation %>>
       <input type="hidden" name="reserveDate" value=<%=reserveDate %>>
-        <script src="https://checkout.stripe.com/checkout.js"
+      <input type="hidden" name="userId" value=<%=userId %>>
+      <input type="hidden" name="gymId" value=<%=gymId %>>
+      <div style="text-align:center; padding-top:15px;"><script src="https://checkout.stripe.com/checkout.js"
             class='stripe-button'
             data-key='pk_test_xueP3RRIWPJGb3igzkJQcPX200yDf5fc4L'
             data-amount=<%=amount*100 %>
-            data-name='Gym'
+            data-name='GarageGym'
             data-description="Rent Gym"
             data-locale = "auto"
-            data-currency ="usd"></script>
+	    data-currency ="usd"></script></div>
     </form>
     </div>
   </body>

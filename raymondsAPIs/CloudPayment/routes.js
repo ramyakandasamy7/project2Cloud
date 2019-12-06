@@ -22,7 +22,10 @@ exports.showhome = function(req, res) {
     var userEmail = req.body.userEmail;
     var gymLocation = req.body.gymLocation;
     var reserveDate = req.body.reserveDate;
-    res.render('home', {amount: amount, ownerEmail: ownerEmail, userEmail: userEmail, gymLocation: gymLocation, reserveDate: reserveDate });
+    var userId = req.body.userID;
+    var gymId = req.body.gymID;
+    var ownerId = req.body.ownerId;
+    res.render('home', {req: req.body, ownerId: ownerId, amount: amount, userId: userId, gymId: gymId, ownerEmail: ownerEmail, userEmail: userEmail, gymLocation: gymLocation, reserveDate: reserveDate });
 }
 
 exports.charge = function(req, res) {
@@ -32,6 +35,7 @@ exports.charge = function(req, res) {
     var userEmail = req.body.userEmail;
     var gymLocation = req.body.gymLocation;
     var reserveDate = req.body.reserveDate;
+    var ownerId = req.body.ownerId;
     console.log(chargeAmount);
     var mailOptions = {
         to: userEmail,
@@ -57,9 +61,10 @@ exports.charge = function(req, res) {
             TableName: "requestDatabase",
             Item: {
               requestID: ID,
-              dateRequest: req.body.reserve_date,
+              dateRequest: req.body.reserveDate,
               userID: req.body.userId,
               gymID: req.body.gymId,
+	      ownerID: req.body.ownerId,
               status: "Pending"
             }
           };
@@ -80,7 +85,7 @@ exports.charge = function(req, res) {
             smtpTransport.sendMail(ownerMailOptions, (err, response) => {
 
             });
-         res.render('otherpage');
+         res.redirect('http://gg.mymsseprojects.com');
         }
     })
 }

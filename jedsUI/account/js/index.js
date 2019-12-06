@@ -2,34 +2,52 @@ var pubip;
 var API_URL;
 var accountInfo;
 var allGyms = {};
+var allRequests = {};
 
 function initUI(pubip) {
 	window.pubip = pubip;
 	window.API_URL = "http://"+pubip+":3000";
-	getAccountInfo();
 	renderModals();
 	renderMainContainers();
+	getAccountInfo();
 	//renderListOfGyms();
 	//renderListOfRequests();
 }
 
 function getAccountInfo() {
-	console.log(window.accountID);
-	$.ajax({
-		url: window.API_URL+"/owners/"+window.accountID,
-		type: "GET",
-		dataType: "json"
-	}).done(function(data, message, stat) {
-		if (stat.status === 200) {
-			console.log(data.Item);
-			window.accountInfo = data.Item
-			renderAccountInfo();
-			getListOfGyms();
-		} else {
-			alert("Failed to get account information.");
-			window.location("http://gg.mymsseprojects.com");
-		}
-	});
+	let acctType = Cookies.get('mode');
+	let email = Cookies.get('username');
+	if (acctType == "o") {
+		console.log("I'm doing this");
+		$.ajax({
+			url: window.API_URL+"/owners/"+window.accountID,
+			type: "GET",
+			dataType: "json"
+		}).done(function(data, message, stat) {
+			if (stat.status === 200) {
+				console.log(data.Item);
+				window.accountInfo = data.Item
+				renderAccountInfo();
+				getListOfGyms();
+				getListOfRequests();
+			} else {
+				alert("Failed to get account information.");
+				window.location("http://gg.mymsseprojects.com");
+			}
+		});
+	} else {
+		showUserInfo(email);
+	}
+}
+
+function showUserInfo(email) {
+	$('#accountContainer').empty();	
+	$('#accountContainer').append(
+		"<div class='jumbotron'>"
+			+"<h1 class='display-4'>Welcome!</h1>"
+			+"<p class='lead'>Your account info and settings would go here "+email+"</p>"
+		+"</div>"
+	);
 }
 
 function renderAccountInfo() {
@@ -190,7 +208,7 @@ function renderMainContainers() {
                                 +"<img src='/imgs/favicon.ico'>"
                         +"</a>"
                 +"</nav>"
-		+"<div class='container-fluid'>"
+		+"<div class='container-fluid' id='accountContainer'>"
 			+"<div class='row'>"
 				+"<div class='col' id='gyms_container'>"
 					+"<div class='card' style='margin-top: 10px;'>"
@@ -230,7 +248,7 @@ function renderMainContainers() {
 					+"<table class='table table-striped table-sm'>"
 						+"<thead class='thead-dark'>"
 							+"<tr>"
-								+"<th>Email</th>"
+								+"<th>Location</th>"
 								+"<th>Date</th>"
 								+"<th>Status</th>"
 								+"<th>Options</th>"
@@ -264,6 +282,22 @@ function getListOfGyms() {
 	});
 }
 
+function getListOfRequests() {
+	let oid = window.accountInfo.ownerID;
+
+	$.ajax({
+		url: window.API_URL+"/requests/"+oid,
+		type: "GET",
+		dataType: "json"
+	}).done(function(data, message, stat) {
+		if (stat.status === 200) {
+			console.log(data);
+			window.allRequests = data.Items;
+			renderListOfRequests();
+		}	
+	});
+}
+
 function renderListOfGyms() {
 	let gyms = window.allGyms;
 
@@ -277,7 +311,7 @@ function renderListOfGyms() {
 				+"<td>"+g.rating+"</td>"
 				+"<td>"
 					+"<div class='btn-group' role='group' aria-label='Options'>"
-						+"<button type='button' class='btn btn-primary btn-sm'>Edit</button>"
+						+"<button type='button' class='btn btn-primary btn-sm' style='margin-right: 10px;'>Edit</button>"
 						+"<button type='button' class='btn btn-danger btn-sm' onclick='deleteGym(\""+g.gymID+"\");'>Remove</button>"
 					+"</div>"
 				+"</td>"
@@ -306,5 +340,66 @@ function deleteGym(id) {
 }
 
 function renderListOfRequests() {
-	
+	let rqs = window.allRequests;
+
+	for (i in rqs) {
+		let rq = rqs[i];
+		let rid = rq.requestID;
+		let gid = rq.gymID;
+		let oid = rq.ownerID;
+		let uid = rq.userID;
+		let drq = rq.dateRequest;
+		let sts = rq.status;
+		let opt;
+		if (sts === "Pending") {
+			opt =  "<button type='button' class='btn btn-primary btn-sm' style='margin-right: 10px;' onclick='confirmRequest(\""+rid+"\")'>Confirm</button>"
+			opt += "<button type='button' class='btn btn-danger btn-sm' onclick='declineRequest(\""+rid+"\");'>Decline</button>"
+		} else {
+			opt = "";
+		}
+		$.ajax({
+			url: window.API_URL+"/gym/"+gid,
+			type: "GET",
+			dataType: "json"
+		}).done(function(data, message, stat) {
+			if (stat.status === 200) {
+				console.log(data.Items);
+				let loc = data.Items[0].locationofGym;
+				$('#requests_tbody').append(
+					"<tr>"
+						+"<td>"+loc+"</td>"
+						+"<td>"+drq+"</td>"
+						+"<td>"+sts+"</td>"
+						+"<td>"+opt+"</td>"
+					+"</tr>"
+				);
+			}
+		});
+	}
+}
+
+function confirmRequest(rid) {
+	$.ajax({
+		url: window.API_URL+"/modifyrequeststatus",
+		type: "POST",
+		data: {requestID:rid, status: "Confirmed"},
+		dataType: "json"
+	}).done(function(data, message, stat) {
+		if (stat.status === 200) {
+			location.reload();
+		}
+	});
+}
+
+function declineRequest(rid) {
+	$.ajax({
+		url: window.API_URL+"/modifyrequeststatus",
+		type: "POST",
+		data: {requestID:rid, status: "Declined"},
+		dataType: "json"
+	}).done(function(data, message, stat) {
+		if (stat.status === 200) {
+			location.reload();
+		}
+	});
 }
