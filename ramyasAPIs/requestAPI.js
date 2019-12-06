@@ -22,6 +22,7 @@ requestRouter.post("/createrequest", (req, res) => {
       dateRequest: req.body.date,
       userID: req.body.userID,
       gymID: req.body.gymID,
+      ownerID: req.body.ownerID,
       status: "Pending"
     }
   };
@@ -72,6 +73,28 @@ requestRouter.get("/requests", (req, res) => {
   });
 });
 
+requestRouter.get("/requests/:ownerID", (req, res) => {
+  console.log(req.params);
+  var params = {
+    TableName: "requestDatabase",
+    IndexName: "ownerID-index",
+    KeyConditionExpression: "ownerID = :g",
+    ExpressionAttributeValues: {
+      ":g": req.params.ownerID
+    }
+  };
+  docClient.query(params, function(err, data) {
+    if (err) {
+      //res.status(400);
+      res.send(err);
+      console.log(err);
+    } else {
+      console.log(data);
+      res.status(200);
+      res.json(data);
+    }
+  });
+});
 //modify request  status
 requestRouter.post("/modifyrequeststatus", (req, res) => {
   var params = {
