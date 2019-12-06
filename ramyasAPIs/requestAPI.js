@@ -100,12 +100,14 @@ requestRouter.post("/modifyrequeststatus", (req, res) => {
   var params = {
     TableName: "requestDatabase",
     Key: {
-      requestID: req.params.requestID
+      requestID: req.body.requestID
     },
-    UpdateExpression: "status=:y",
+    UpdateExpression: "set #status=:y",
     ExpressionAttributeValues: {
-      ":x": req.body.date,
       ":y": req.body.status
+    },
+    ExpressionAttributeNames: {
+      "#status": "status"
     },
     ReturnValues: "UPDATED_NEW"
   };
@@ -124,7 +126,7 @@ requestRouter.post("/modifyrequeststatus", (req, res) => {
 });
 
 /**modify day to workout */
-requestRouter.post("/modifyday", (req, res) => {
+/*requestRouter.post("/modifyday", (req, res) => {
   var params = {
     TableName: "requestDatabase",
     Key: {
@@ -149,5 +151,5 @@ requestRouter.post("/modifyday", (req, res) => {
         .json({ message: req.body.requestID + "updated to" + data });
     }
   });
-});
+});*/
 module.exports = requestRouter;
