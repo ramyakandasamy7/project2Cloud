@@ -105,8 +105,6 @@ requestRouter.post("/modifyrequeststatus", (req, res) => {
     UpdateExpression: "status=:y",
     ExpressionAttributeValues: {
       ":x": req.body.date,
-      ":y": req.body.startTime,
-      ":z": req.body.endTime,
       ":y": req.body.status
     },
     ReturnValues: "UPDATED_NEW"
