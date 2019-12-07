@@ -12,12 +12,27 @@ exports.showhome =  function(req,res) {
       res.render('index');
   }
 exports.showinfo = function(req, res) {
+  aws.config.update({
+    region: "us-west",
+    endpoint: "https://s3.amazonaws.com"
+  });
+  const s3 = new aws.S3({ apiVersion: "2006-03-1" });
+  var params = {
+    Bucket: "ramyakandasamy",
+    Key: req.params.id + "/gym.jpg"
+  };
+  const url =
+    "http://d2s1oz7w0n6e15.cloudfront.net/" + req.params.id + "/gym.jpg";
+  //res.status(200);
+  //res.json(url);
+
+  
     var requests = [];
     var ratingsNumber = 0;
     var numRatings = 0;
     var gymRating = 0;
     var temp = 0;
-    var params = {
+    params = {
         TableName: "gymDatabase",
         KeyConditionExpression: "#gymID = :gymid",
         ExpressionAttributeNames: {
@@ -66,7 +81,7 @@ exports.showinfo = function(req, res) {
         else {
           console.log(requests[0].gymOwner)
       data.Items.forEach(function(item) {
-        res.render('gyminfo', {gyminfo: requests, rating: gymRating, owner: item.username, newinfo: temp});
+        res.render('gyminfo', {image: url, gyminfo: requests, rating: gymRating, owner: item.username, newinfo: temp});
       });
       
   }
