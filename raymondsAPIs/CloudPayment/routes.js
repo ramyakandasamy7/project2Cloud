@@ -85,7 +85,7 @@ exports.charge = function(req, res) {
               });*/
             }
           });
-         res.redirect('http://gg.mymsseprojects.com');
+         res.redirect('http://gg.ramyaprojects.net');
         }
     })
 }

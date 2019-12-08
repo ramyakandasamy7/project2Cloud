@@ -31,7 +31,7 @@ $out = exec($cmd, $output, $ec);
 				$("#messageBox").append(
 				 	"<h1 class='display-4'>Owner account successfuly verified!</h1>"
 					+"<hr class='my-4'>"
-					+"<p class='lead'>Click <a href='http://gg.mymsseprojects.com'>HERE</a> to go back to the login page or wait 5 seconds.</p>"
+					+"<p class='lead'>Click <a href='http://gg.ramyaprojects.net'>HERE</a> to go back to the login page or wait 5 seconds.</p>"
 				);
 
 			} else {
@@ -39,11 +39,11 @@ $out = exec($cmd, $output, $ec);
 				 	"<h1 class='display-4'>Account NOT verified!</h1>"
 					+"<p class='lead'>Something went wrong!</p>"
 					+"<hr class='my-4'>"
-					+"<p class='lead'>Click <a href='http://gg.mymsseprojects.com'>HERE</a> to go back to the login page or wait 5 seconds.</p>"
+					+"<p class='lead'>Click <a href='http://gg.ramyaprojects.net'>HERE</a> to go back to the login page or wait 5 seconds.</p>"
 				);	
 			}
 			setTimeout(function() {
-				window.location.href = 'http://gg.mymsseprojects.com';
+				window.location.href = 'http://gg.ramyaprojects.net';
 			}, 5000);
 		});
 		</script>

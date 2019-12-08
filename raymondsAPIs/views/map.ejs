@@ -234,7 +234,7 @@ img {vertical-align: middle;}
               geocode(geocoder, gym_info[j].locationofGym, gym_info[j].gymID, function(results) {
               temp = new google.maps.Marker({ 
               position: results.result[0].geometry.location, id:results.id, map: map, title: 'Gym#' + j, animation: google.maps.Animation.DROP,
-              icon: {url:'http://gg.mymsseprojects.com/imgs/favicon.ico', size: new google.maps.Size(50, 50), scaledSize: new google.maps.Size(50,50)}
+              icon: {url:'http://gg.ramyaprojects.net/imgs/favicon.ico', size: new google.maps.Size(50, 50), scaledSize: new google.maps.Size(50,50)}
               })
               gymmarker.push(temp);
               temp.addListener('click', function() {

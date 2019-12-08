@@ -95,11 +95,11 @@ function logout() {
 	deleteCookie();
 	localStorage.removeItem('username');
 	localStorage.removeItem('userID');
-	window.location.replace("http://gg.mymsseprojects.com");
+	window.location.replace("http://gg.ramyaprojects.net");
 }
 
 function showAccountPage() {
-	window.location.replace("http://gg.mymsseprojects.com/account?id="+window.userID+"&accttype="+window.accountType);
+	window.location.replace("http://gg.ramyaprojects.net/account?id="+window.userID+"&accttype="+window.accountType);
 }
 
 function processRegistration() {
@@ -128,7 +128,7 @@ function processRegistration() {
 		}).done(function(data, message, stat){
 			console.log(data);
 			if (stat.status === 200) {
-				window.location.replace("http://gg.mymsseprojects.com/verify_account?email="+email);
+				window.location.replace("http://gg.ramyaprojects.net/verify_account?email="+email);
 			}
 		});
 	} else {
@@ -139,7 +139,7 @@ function processRegistration() {
 		}).done(function(data, message, stat){
 			console.log(data);
 			if (stat.status === 200) {
-				window.location.replace("http://gg.mymsseprojects.com/verify_account?email="+email);
+				window.location.replace("http://gg.ramyaprojects.net/verify_account?email="+email);
 			}
 		});
 	}

@@ -5,7 +5,7 @@ header("Access-Control-Allow-Origin: *");
 if (isset($_GET)) {
 	$id = $_GET['id'];
 } else {
-	header("Location: http://gg.mymsseprojects.com");
+	header("Location: http://gg.ramyaprojects.net");
 }
 $cmd = "curl ifconfig.me";
 $out = exec($cmd, $output, $ec);
