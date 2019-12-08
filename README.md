@@ -1,4 +1,4 @@
-# H1 Garage Gym Project Information
+# Garage Gym Project Information
 
 University Name: [San Jose State Unversity](http://www.sjsu.edu/ "SJSU Home Page")
 
