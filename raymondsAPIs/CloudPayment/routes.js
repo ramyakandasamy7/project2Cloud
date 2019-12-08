@@ -54,6 +54,12 @@ exports.charge = function(req, res) {
     }, function(err,charge) {
         if(err) res.send(err)
         else {
+          smtpTransport.sendMail(mailOptions, (err, response) => {
+            
+          });
+          smtpTransport.sendMail(ownerMailOptions, (err, response) => {
+
+          });
           var ID = Math.random()
             .toString(36)
             .substr(2, 9);
@@ -79,12 +85,6 @@ exports.charge = function(req, res) {
               });
             }
           });
-            smtpTransport.sendMail(mailOptions, (err, response) => {
-            
-            });
-            smtpTransport.sendMail(ownerMailOptions, (err, response) => {
-
-            });
          res.redirect('http://gg.mymsseprojects.com');
         }
     })
