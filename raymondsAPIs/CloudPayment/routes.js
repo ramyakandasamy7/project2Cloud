@@ -40,7 +40,7 @@ exports.charge = function(req, res) {
     var mailOptions = {
         to: userEmail,
         subject: "Reservation for Gym Confirmation",
-        html:"You have paid $" + chargeAmount/100 +" for the gym at " +  gymLocation + "on " + reserveDate
+        html:"You have paid $" + chargeAmount/100 +" for the gym at " +  gymLocation + " on " + reserveDate
       };
     var ownerMailOptions = {
       to: ownerEmail,
@@ -76,13 +76,13 @@ exports.charge = function(req, res) {
           };
           docClient.put(paramsaddRequest, function(err, data) {
             if (err) {
-              return res.status(400).json({
+              /*return res.status(400).json({
                 message: "unable to add request to database " + err
-              });
+              });*/
             } else {
-              return res.status(200).json({
+              /*return res.status(200).json({
                 message: ID + "request successfully added to database"
-              });
+              });*/
             }
           });
          res.redirect('http://gg.mymsseprojects.com');
