@@ -1,3 +1,5 @@
+# H1 Garage Gym Project Information
+
 University Name: [San Jose State Unversity](http://www.sjsu.edu/ "SJSU Home Page")
 
 Project URL: [Garage Gym](http://gg.ramyaprojects.net "Garage Gym Home Page")
