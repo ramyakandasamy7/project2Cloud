@@ -24,7 +24,7 @@ if (isset($_GET)) {
 				<?php if ($email) {echo "at ".$email." ";}?>
 				to verify your account.</p>
 				<hr class="my-4">
-				<p class="lead">Click <a href='http://gg.mymsseprojects.com'>HERE</a> to go back to the login page.</p>
+				<p class="lead">Click <a href='http://gg.ramyaprojects.net'>HERE</a> to go back to the login page.</p>
 			</div>
 		</div>
 	</body>

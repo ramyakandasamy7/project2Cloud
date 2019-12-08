@@ -60,7 +60,7 @@ userRouter.post("/createnewUser", (req, res) => {
           location: req.body.register_location
         }
       };
-      var link = "http://gg.mymsseprojects.com/user_verification?id=" + ID;
+      var link = "http://gg.ramyaprojects.net/user_verification?id=" + ID;
       var emailAddress = req.body.register_email;
       mailOptions = {
         to: emailAddress,

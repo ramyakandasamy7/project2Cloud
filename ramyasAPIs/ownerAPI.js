@@ -62,7 +62,7 @@ ownerRouter.post("/createnewOwner", (req, res) => {
           location: req.body.register_location
         }
       };
-      var link = "http://gg.mymsseprojects.com/owner_verification?id=" + ID;
+      var link = "http://gg.ramyaprojects.net/owner_verification?id=" + ID;
       var emailAddress = req.body.register_email;
       mailOptions = {
         to: emailAddress,

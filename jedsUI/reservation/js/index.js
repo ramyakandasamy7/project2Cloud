@@ -24,7 +24,7 @@ function checkIfLoggedIn() {
 		return true;
         } else {
 		alert("Please login or create an account first before making a reservation.");
-		window.location.replace('http://gg.mymsseprojects.com');
+		window.location.replace('http://gg.ramyaprojects.net');
 		return false;
         }
 }
@@ -128,7 +128,7 @@ function renderUI() {
 
 	$("#root").append(
 		"<nav class='navbar navbar-light bg-dark' style='margin-bottom: 20px;'>" 
-			+"<a class='navbar-brand' href='http://gg.mymsseprojects.com'>"
+			+"<a class='navbar-brand' href='http://gg.ramyaprojects.net'>"
 				+"<img src='/imgs/favicon.ico'>"
 			+"</a>"
 		+"</nav>"

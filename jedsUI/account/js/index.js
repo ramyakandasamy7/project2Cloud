@@ -32,7 +32,7 @@ function getAccountInfo() {
 				getListOfRequests();
 			} else {
 				alert("Failed to get account information.");
-				window.location("http://gg.mymsseprojects.com");
+				window.location("http://gg.ramyaprojects.net");
 			}
 		});
 	} else {
@@ -204,7 +204,7 @@ function renderMainContainers() {
 	//$('#root').empty();
 	$('#root').append(
 		"<nav class='navbar navbar-light bg-dark' style='margin-bottom: 20px;'>"
-                        +"<a class='navbar-brand' href='http://gg.mymsseprojects.com'>"
+                        +"<a class='navbar-brand' href='http://gg.ramyaprojects.net'>"
                                 +"<img src='/imgs/favicon.ico'>"
                         +"</a>"
                 +"</nav>"
