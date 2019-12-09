@@ -29,13 +29,14 @@ exports.showhome = function(req, res) {
 }
 
 exports.charge = function(req, res) {
-    var token = req.body.stripeToken;
+    var token        = req.body.stripeToken;
     var chargeAmount = req.body.chargeAmount;
-    var ownerEmail = req.body.ownerEmail;
-    var userEmail = req.body.userEmail;
-    var gymLocation = req.body.gymLocation;
-    var reserveDate = req.body.reserveDate;
-    var ownerId = req.body.ownerId;
+    var ownerEmail   = req.body.ownerEmail;
+    var userEmail    = req.body.userEmail;
+    var userID       = req.body.userID;
+    var gymLocation  = req.body.gymLocation;
+    var reserveDate  = req.body.reserveDate;
+    var ownerId      = req.body.ownerId;
     console.log(chargeAmount);
     var mailOptions = {
         to: userEmail,
@@ -85,7 +86,7 @@ exports.charge = function(req, res) {
               });*/
             }
           });
-         res.redirect('http://gg.ramyaprojects.net');
+         res.redirect('http://gg.ramyaprojects.net/account?id='+userID+'&accttype=g');
         }
     })
 }
