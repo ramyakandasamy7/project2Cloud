@@ -58,7 +58,12 @@ Cancel Request:
 
 **Pre-requisites Set Up**
 
-Here include bullet point list of resources one need to configure in their cloud account. (E.g. For AWS: S3 buckets, CloudFront etc)
+Here include bullet point list of resources one need to configure in their cloud account. (E.g. For AWS: S3 buckets, CloudFront etc):
+* S3 bucket
+* CloudFront
+* EC2s: 2 ECs per region with load balancer in each region (us-west & us-east)
+* Route 53
+* DynamoDB - 5 Tables with Global Table Configuration
 
 List of required software to download locally (E.g. Spring, JDK, Eclipse IDE etc. )
 
