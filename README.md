@@ -110,10 +110,14 @@ $npm install
         Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
 </Directory>
 ```
-`sudo ln -s /home/ubuntu/project2Cloud/jedsUI /var/www/html`
+`$ sudo ln -s /home/ubuntu/project2Cloud/jedsUI /var/www/html`
 
 Note: You may need to delete the /var/www/html directory first.
 
+5. Restart Apache2. The root directory of Apache should point to jedsUI directory now which is where the homepage of the project resides. You may open a browser and check localhost. 
 
+`$ sudo service apache2 restart`
 
-Local configuration
+#### Another important NOTE: Because the UI uses each EC2's public IP to make API calls, the application will only fully work in an EC2 with public IP.
+
+#### Yet another important NOTE: API keys and secret keys are not included in the code, so really, without them, you can only look at the front page of the project.
