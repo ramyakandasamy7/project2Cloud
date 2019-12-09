@@ -9,7 +9,7 @@ var gym_id = 0;
 var global_owner = 0;
 describe ("GET ALL GYMS", function(){
     it("should get all gyms in the database", done=>{
-        chai.request("http://localhost:3000")
+        chai.request("http://54.166.188.110:3000")
             .get("/gyms")
             .end((err,res)=>{
                 res.should.have.status(200);

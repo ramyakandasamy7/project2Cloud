@@ -18,6 +18,8 @@ Students:
 
 Project Introduction (What the application does, feature list)
 
+GymGarage is an online-platform that connects local gym owners to gym enthusiasts. Gym owners can list their home gyms (along with description and cost per use) and decline/accept requests. Gym enthusiasts can search for gyms, submit requests, and do payment all on this platform. 
+
 Sample Demo Screenshots
 
 Pre-requisites Set Up
