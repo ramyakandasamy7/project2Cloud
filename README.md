@@ -22,6 +22,8 @@ GymGarage is an online-platform that connects local gym owners to gym enthusiast
 
 Sample Demo Screenshots
 
+<img width="1144" alt="Screen Shot 2019-12-08 at 3 10 27 PM" src="https://user-images.githubusercontent.com/36056493/70399043-cb6f0300-19d5-11ea-8ba1-da489900b0ff.png"> 
+
 Pre-requisites Set Up
 
 Here include bullet point list of resources one need to configure in their cloud account. (E.g. For AWS: S3 buckets, CloudFront etc)
