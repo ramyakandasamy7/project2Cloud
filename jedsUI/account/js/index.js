@@ -46,7 +46,7 @@ function showUserInfo(email) {
 		+"<div class='row'>"
                         +"<div class='col' id='requests_container'>"
                                 +"<h5>My Gym Requests</h5>"
-                                +"<table class='table table-striped table-sm'>"
+                                +"<table class='table table-striped table-sm' style='vertical-align: middle;'>"
                                         +"<thead class='thead-dark'>"
                                                 +"<tr>"
                                                         +"<th>Location</th>"
@@ -294,13 +294,15 @@ function getListOfGyms() {
 }
 
 function getListOfRequests() {
-	if (window.acctType === "o") {
+	if (window.accountInfo !== undefined) {
 		let oid = window.accountInfo.ownerID;
 		$.ajax({
 			url: window.API_URL+"/requests/"+oid,
 			type: "GET",
 			dataType: "json"
 		}).done(function(data, message, stat) {
+			console.log("Owner Requests");
+			console.log(data);
 			if (stat.status === 200) {
 				window.allRequests = data.Items;
 				renderListOfRequests();
@@ -312,6 +314,8 @@ function getListOfRequests() {
 			type: "GET",
 			dataType: "json"
 		}).done(function(data, message, stat){
+			console.log("User Requests");
+			console.log(data);
 			if (stat.status === 200) {
 				window.allRequests = data.Items;
 				renderListOfRequests();
@@ -332,10 +336,8 @@ function renderListOfGyms() {
 				+"<td>"+g.attributes+"</td>"
 				+"<td>"+g.rating+"</td>"
 				+"<td>"
-					+"<div class='btn-group' role='group' aria-label='Options'>"
-						+"<button type='button' class='btn btn-primary btn-sm' style='margin-right: 10px;'>Edit</button>"
-						+"<button type='button' class='btn btn-danger btn-sm' onclick='deleteGym(\""+g.gymID+"\");'>Remove</button>"
-					+"</div>"
+					+"<button type='button' class='btn btn-primary btn-sm' style='margin-right: 10px;'>Edit</button>"
+					+"<button type='button' class='btn btn-danger btn-sm' onclick='deleteGym(\""+g.gymID+"\");'>Remove</button>"
 				+"</td>"
 			+"</tr>"
 		);
@@ -373,7 +375,8 @@ function renderListOfRequests() {
 		let drq = rq.dateRequest;
 		let sts = rq.status;
 		let opt;
-		if (window.acctType === "o") {
+
+		if (window.accountInfo !== undefined) {
 			if (sts === "Pending") {
 				opt =  "<button type='button' class='btn btn-primary btn-sm' style='margin-right: 10px;' onclick='confirmRequest(\""+rid+"\")'>Confirm</button>";
 				opt += "<button type='button' class='btn btn-danger btn-sm' onclick='declineRequest(\""+rid+"\");'>Decline</button>";
@@ -387,6 +390,21 @@ function renderListOfRequests() {
 				opt = "";
 			}
 		}
+
+		switch(sts) {
+			case "Pending":
+				sts = "<p class='text-info'>"+sts+"</p>"
+				break;
+			case "Cancelled":
+				sts = "<p class='text-sencondary'>"+sts+"</p>"
+				break;
+			case "Confirmed":
+				sts = "<p class='text-success'>"+sts+"</p>"
+				break;
+			default:
+				sts = "<p class='text-dark'>"+sts+"</p>"
+		}
+
 		$.ajax({
 			url: window.API_URL+"/gym/"+gid,
 			type: "GET",
