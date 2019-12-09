@@ -62,4 +62,58 @@ Here include bullet point list of resources one need to configure in their cloud
 
 List of required software to download locally (E.g. Spring, JDK, Eclipse IDE etc. )
 
+## Required Software To Run Locally
+
+#### Software Requirements
+
+* Ubuntu 18.04 EC2
+
+* Git
+
+* NodeJS
+
+* Apache2
+
+* PHP
+
+* vim/nano
+
+#### Local Configuration
+
+1. Clone/fork the repository from github.
+
+`$ git clone https://github.com/ramyakandasamy7/project2Cloud.git`
+
+2. Install all necessary software
+
+`$ sudo apt update; sudo apt install nodejs apache2 php`
+
+3. Go into project2Cloud/ramyasAPIs and project2Cloud/raymondsAPIs and install the dependencies
+
+```
+$ cd project2Cloud/ramyasAPIs
+$ npm install
+$cd ../raymondsAPIs
+$npm install
+```
+
+4. Point Apache2 /var/www/html directory to project2Cloud/jedsUI. Look at /etc/apache/apache.conf and add the following to the tag `<Directory /var/www/>`
+
+```
+<Directory /var/www/>
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+        Header always set Access-Control-Allow-Origin "*"
+        Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+        Header always set Access-Control-Max-Age "1000"
+        Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
+</Directory>
+```
+`sudo ln -s /home/ubuntu/project2Cloud/jedsUI /var/www/html`
+
+Note: You may need to delete the /var/www/html directory first.
+
+
+
 Local configuration
