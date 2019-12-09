@@ -29,6 +29,31 @@ Login and Registration
 
 <img width="407" alt="Screen Shot 2019-12-08 at 3 16 06 PM" src="https://user-images.githubusercontent.com/36056493/70399077-0a04bd80-19d6-11ea-90ac-39a77b29d70d.png">
 
+Administrator Capabilities:
+
+Upload Gym
+<img width="507" alt="Screen Shot 2019-12-08 at 3 17 55 PM" src="https://user-images.githubusercontent.com/36056493/70399092-27d22280-19d6-11ea-9e5c-e98641b0b039.png">
+
+Accept/Decline Requests
+<img width="1452" alt="Screen Shot 2019-12-08 at 3 18 42 PM" src="https://user-images.githubusercontent.com/36056493/70399147-6962cd80-19d6-11ea-8087-b5ceaa2d93e3.png">
+
+Receive Emails when a Reservation has been made
+<img width="528" alt="Screen Shot 2019-12-08 at 3 19 23 PM" src="https://user-images.githubusercontent.com/36056493/70399165-813a5180-19d6-11ea-85fe-1d9f4291c2a8.png">
+
+User Capabilities:
+
+Search and Select a Gym
+<img width="400" alt="Screen Shot 2019-12-08 at 3 32 12 PM" src="https://user-images.githubusercontent.com/36056493/70399191-b0e95980-19d6-11ea-88c0-2ccbad46bf45.png">
+
+<img width="915" alt="Screen Shot 2019-12-08 at 3 34 17 PM" src="https://user-images.githubusercontent.com/36056493/70399205-ca8aa100-19d6-11ea-8a8b-1ab5e74f3903.png">
+
+Pay for Gym
+<img width="300" alt="Screen Shot 2019-12-08 at 3 35 37 PM" src="https://user-images.githubusercontent.com/36056493/70399217-de360780-19d6-11ea-9b54-d81f3589bb2b.png">
+
+<img width="300" alt="Screen Shot 2019-12-08 at 3 35 59 PM" src="https://user-images.githubusercontent.com/36056493/70399219-e2fabb80-19d6-11ea-841b-1c116677937a.png">
+
+Cancel Request:
+<INSERT>
 
 Pre-requisites Set Up
 
