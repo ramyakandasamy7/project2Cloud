@@ -14,7 +14,7 @@
 
 * [Jed Villanueva](https://www.linkedin.com/in/jed-v/ "Jed's LinkedIn")
 
-* [Raymond Ho]()
+* [Raymond Ho](https://www.linkedin.com/in/raymond-ho-9b3980163/ "Raymond's LinkedIn")
 
 **Project Introduction**
 
