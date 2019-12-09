@@ -38,6 +38,7 @@ requestRouter.post("/createrequest", (req, res) => {
     }
   });
 });
+
 //delete request to workout
 requestRouter.post("/deleterequest", (req, res) => {
   var params = {
@@ -59,6 +60,7 @@ requestRouter.post("/deleterequest", (req, res) => {
     }
   });
 });
+
 //get requests
 requestRouter.get("/requests", (req, res) => {
   var params = {
@@ -95,6 +97,30 @@ requestRouter.get("/requests/:ownerID", (req, res) => {
     }
   });
 });
+
+requestRouter.get("/request/:userID", (req, res) => {
+  console.log(req.params);
+  var params = {
+    TableName: "requestDatabase",
+    IndexName: "userID-index",
+    KeyConditionExpression: "userID = :g",
+    ExpressionAttributeValues: {
+      ":g": req.params.userID
+    }
+  };
+  docClient.query(params, function(err, data) {
+    if (err) {
+      //res.status(400);
+      res.send(err);
+      console.log(err);
+    } else {
+      console.log(data);
+      res.status(200);
+      res.json(data);
+    }
+  });
+});
+
 //modify request  status
 requestRouter.post("/modifyrequeststatus", (req, res) => {
   var params = {

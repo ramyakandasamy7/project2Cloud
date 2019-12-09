@@ -24,17 +24,6 @@ function checkIfLoggedIn() {
 		window.accountType = userInfo.acctType;
 		localStorage.setItem('username', window.username);
 		localStorage.setItem('userID', window.userID);
-		/* Thinking about pulling user data when cookie exists
-		 *but may be necessary...?
-		 * */
-		//let mode = userInfo.mode;
-		//let api;
-		//if (mode == "g") {
-		//	api = '';
-		//}
-		//$.ajax({
-		//	url: API_URL+"/"
-		//});
 		showUserSettings(window.userID, window.username, window.accountType);
 	} else {
 		console.log('Not logged in');
