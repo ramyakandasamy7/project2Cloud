@@ -22,7 +22,13 @@ GymGarage is an online-platform that connects local gym owners to gym enthusiast
 
 Sample Demo Screenshots
 
+Login and Registration
 <img width="1144" alt="Screen Shot 2019-12-08 at 3 10 27 PM" src="https://user-images.githubusercontent.com/36056493/70399043-cb6f0300-19d5-11ea-8ba1-da489900b0ff.png"> 
+
+<img width="498" alt="Screen Shot 2019-12-08 at 3 11 24 PM" src="https://user-images.githubusercontent.com/36056493/70399068-f9ecde00-19d5-11ea-89c2-d3a470be7d34.png">
+
+<img width="407" alt="Screen Shot 2019-12-08 at 3 16 06 PM" src="https://user-images.githubusercontent.com/36056493/70399077-0a04bd80-19d6-11ea-90ac-39a77b29d70d.png">
+
 
 Pre-requisites Set Up
 
