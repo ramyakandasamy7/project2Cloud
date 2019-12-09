@@ -49,11 +49,13 @@ Search and Select a Gym
 <img width="915" alt="Screen Shot 2019-12-08 at 3 34 17 PM" src="https://user-images.githubusercontent.com/36056493/70399205-ca8aa100-19d6-11ea-8a8b-1ab5e74f3903.png">
 
 Pay for Gym
+
 <img width="300" alt="Screen Shot 2019-12-08 at 3 35 37 PM" src="https://user-images.githubusercontent.com/36056493/70399217-de360780-19d6-11ea-9b54-d81f3589bb2b.png">
 
 <img width="300" alt="Screen Shot 2019-12-08 at 3 35 59 PM" src="https://user-images.githubusercontent.com/36056493/70399219-e2fabb80-19d6-11ea-841b-1c116677937a.png">
 
 Cancel Request:
+
 <INSERT>
 
 **Pre-requisites Set Up**
