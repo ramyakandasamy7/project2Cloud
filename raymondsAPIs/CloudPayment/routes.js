@@ -33,11 +33,11 @@ exports.charge = function(req, res) {
     var chargeAmount = req.body.chargeAmount;
     var ownerEmail   = req.body.ownerEmail;
     var userEmail    = req.body.userEmail;
-    var userID       = req.body.userID;
+    var userId       = req.body.userId;
     var gymLocation  = req.body.gymLocation;
     var reserveDate  = req.body.reserveDate;
     var ownerId      = req.body.ownerId;
-    console.log(chargeAmount);
+    console.log(req.body);
     var mailOptions = {
         to: userEmail,
         subject: "Reservation for Gym Confirmation",
@@ -86,7 +86,7 @@ exports.charge = function(req, res) {
               });*/
             }
           });
-         res.redirect('http://gg.ramyaprojects.net/account?id='+userID+'&accttype=g');
+         res.redirect('http://gg.ramyaprojects.net/account?id='+userId+'&accttype=g');
         }
     })
 }
