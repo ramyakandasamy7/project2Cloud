@@ -1,14 +1,14 @@
 # Garage Gym Project Information
 
-University Name: [San Jose State Unversity](http://www.sjsu.edu/ "SJSU Home Page")
+**University Name**: [San Jose State Unversity](http://www.sjsu.edu/ "SJSU Home Page")
 
-Project URL: [Garage Gym](http://gg.ramyaprojects.net "Garage Gym Home Page")
+**Project URL**: [Garage Gym](http://gg.ramyaprojects.net "Garage Gym Home Page")
 
-Course: Cloud Technologies
+**Course**: Cloud Technologies
 
-Professor: [Sanjay Garje](https://www.linkedin.com/in/sanjaygarje/ "LinkedIn to Prof. Sanjay Garje's Profile") 
+**Professor**: [Sanjay Garje](https://www.linkedin.com/in/sanjaygarje/ "LinkedIn to Prof. Sanjay Garje's Profile") 
 
-Students:
+**Students**:
 
 * [Ramya Kandasamy](https://www.linkedin.com/in/ramyakandasamy/ "Ramya's LinkedIn")
 
@@ -16,11 +16,11 @@ Students:
 
 * [Raymond Ho]()
 
-Project Introduction (What the application does, feature list)
+**Project Introduction**
 
 GymGarage is an online-platform that connects local gym owners to gym enthusiasts. Gym owners can list their home gyms (along with description and cost per use) and decline/accept requests. Gym enthusiasts can search for gyms, submit requests, and do payment all on this platform. 
 
-Sample Demo Screenshots
+**Sample Demo Screenshots**
 
 Login and Registration
 <img width="1144" alt="Screen Shot 2019-12-08 at 3 10 27 PM" src="https://user-images.githubusercontent.com/36056493/70399043-cb6f0300-19d5-11ea-8ba1-da489900b0ff.png"> 
@@ -32,7 +32,8 @@ Login and Registration
 Administrator Capabilities:
 
 Upload Gym
-<img width="507" alt="Screen Shot 2019-12-08 at 3 17 55 PM" src="https://user-images.githubusercontent.com/36056493/70399092-27d22280-19d6-11ea-9e5c-e98641b0b039.png">
+
+<img width="400" alt="Screen Shot 2019-12-08 at 3 17 55 PM" src="https://user-images.githubusercontent.com/36056493/70399092-27d22280-19d6-11ea-9e5c-e98641b0b039.png">
 
 Accept/Decline Requests
 <img width="1452" alt="Screen Shot 2019-12-08 at 3 18 42 PM" src="https://user-images.githubusercontent.com/36056493/70399147-6962cd80-19d6-11ea-8087-b5ceaa2d93e3.png">
@@ -55,7 +56,7 @@ Pay for Gym
 Cancel Request:
 <INSERT>
 
-Pre-requisites Set Up
+**Pre-requisites Set Up**
 
 Here include bullet point list of resources one need to configure in their cloud account. (E.g. For AWS: S3 buckets, CloudFront etc)
 
